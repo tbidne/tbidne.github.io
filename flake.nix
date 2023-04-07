@@ -13,6 +13,7 @@
       perSystem = { pkgs, ... }:
         let
           buildTools = [
+            pkgs.nodejs
             pkgs.rubyPackages_3_1.jekyll
             pkgs.ruby_3_1
           ];
