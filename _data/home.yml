@@ -1,0 +1,106 @@
+navbar_entries:
+  - title: home
+    url: /
+
+  - title: about
+    url: about
+
+  - title: projects
+    url: projects
+
+  - title: blog
+    url: blog
+
+  - title: contact
+    url: contact
+
+  - title: github
+    url: https://www.github.com/tbidne
+
+  - title: linkedin
+    url: https://www.linkedin.com/tbidne
+
+project_entries:
+  - title: Shrun
+    url: https://www.github.com/tbidne/shrun
+    desc: A tool for running and timing multiple shell commands concurrently.
+
+  - title: Navi
+    url: https://www.github.com/tbidne/navi
+    desc: A tool for easily creating desktop notifications for arbitrary actions.
+
+  - title: Safe-rm
+    url: https://www.github.com/tbidne/safe-rm
+    desc: A safer alternative to the venerable unix tool 'rm'.
+
+  - title: Time-Conv
+    url: https://www.github.com/tbidne/time-conv
+    desc: CLI tool for easy timezone conversion.
+
+libraries_entries:
+  - title: Algebra-Simple
+    url: https://www.github.com/tbidne/algebra-simple
+    desc: A safe and more cohesive alternative to Haskell's default algebraic representation, taking inspiration from abstract algebra.
+
+  - title: SI-Bytes
+    url: https://www.github.com/tbidne/si-bytes
+    desc: Haskell library for type-safe byte operations i.e. ensuring that byte sizes are handled correctly.
+
+  - title: Monad Effects
+    url: https://www.github.com/tbidne/monad-effects
+    desc: Haskell library for "effectful" programming based on the Monad typeclass.
+
+  - title: Nix-Hs-Tools
+    url: https://www.github.com/tbidne/nix-hs-tools
+    desc: Provides popular Haskell development tools via nix.
+
+  - title: Nix-Hs-Shells
+    url: https://www.github.com/tbidne/nix-hs-tools
+    desc: Nix shells for Haskell development.
+
+footer_entries:
+  - title: abhinav's homepage
+    url: https://www.abhinav.co
+
+  - title: twitter
+    url: https://twitter.com/abhinav
+
+  - title: github
+    url: https://github.com/abhinavs
+
+  - title: feed
+    url: feed.xml
+
+misc_entries:
+  - title: this is an example vertical list
+    url: false
+
+  - title: you can show or hide using a boolean flag in _config.yml
+    url: false
+
+  - title: and you can add data in _data/home.yml
+    url: false
+
+  - title: Blog posts
+    post_list: true
+    url: false
+
+  - title: moonwalk on the Internet
+    url: false
+    entries:
+      - title: on Github
+        url: https://github.com/abhinavs/moonwalk
+
+      - title: originally built for abhinav's homepage
+        url: https://www.abhinav.co
+
+      - title: this list is scalable and can be nested
+        url: false
+        entries:
+          - title: this is nested inside a nested list
+            url: false
+
+          - title: it is easy to use, see _data/home.yml to see how to configure it.
+            url: false
+
+
