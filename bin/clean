@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+del_exists () {
+  if [[ -e $1 ]]; then
+    echo "Deleting $1"
+    rm -rf $1
+  fi
+}
+
+# Process args
+
+all=0
+while [ $# -gt 0 ]; do
+  if [[ $1 == "--help" || $1 == "-h" ]]; then
+    echo -e "clean: Removes generated files / directories.\n"
+    echo "Usage: clean [-a|--all]"
+    echo "             [-h|--help]"
+    echo ""
+    echo "Available options:"
+    echo -e "  -a,--all    \tIf enabled, also deletes vendor/. The next run will require"
+    echo -e "              \tbundle install.\n"
+    exit 0
+  elif [[ $1 == "--all" || $1 == "-a" ]]; then
+    all=1
+  else
+    echo "Unexpected arg: '$1'. Try --help."
+    exit 1
+  fi
+  shift
+done
+
+del_exists ".jekyll-metadata"
+del_exists "_site"
+del_exists ".sass-cache"
+
+if [[ $all = 1 ]]; then
+  del_exists "vendor"
+fi
