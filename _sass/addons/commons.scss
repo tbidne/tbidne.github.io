@@ -108,8 +108,8 @@ img {
     }
 
     &.shadow {
-      -webkit-filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.08));
-      filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.08));
+      -webkit-filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 8%));
+      filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 8%));
       box-shadow: none !important; /* cover the Bootstrap 4.6.1 styles */
     }
 
@@ -371,7 +371,7 @@ i {
     border-spacing: 0;
 
     thead {
-      border-bottom: solid 2px rgba(210, 215, 217, 0.75);
+      border-bottom: solid 2px rgba(210, 215, 217, 75%);
 
       th {
         @extend %table-cell;
@@ -747,7 +747,7 @@ $sidebar-display: 'sidebar-display';
       width: 6rem;
       height: 6rem;
       border-radius: 50%;
-      border: 2px solid rgba(222, 222, 222, 0.7);
+      border: 2px solid rgba(222, 222, 222, 70%);
       overflow: hidden;
       -webkit-transform: translateZ(0);
       transform: translateZ(0); /* fixed the zoom in Safari */
@@ -781,7 +781,7 @@ $sidebar-display: 'sidebar-display';
       font-weight: 900;
       font-size: 1.5rem;
       letter-spacing: 0.5px;
-      color: rgba(134, 133, 133, 0.99);
+      color: rgba(134, 133, 133, 99%);
     }
   }
 
@@ -963,7 +963,7 @@ $sidebar-display: 'sidebar-display';
   right: 0;
   transition: top 0.2s ease-in-out;
   z-index: 50;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  border-bottom: 1px solid rgba(0, 0, 0, 7%);
   background-color: var(--topbar-wrapper-bg);
 
   [data-topbar-visible='false'] & {
@@ -1259,7 +1259,7 @@ $sidebar-display: 'sidebar-display';
       border-radius: 0.5rem;
       -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
-      background-color: rgba(255, 255, 255, 0.5);
+      background-color: rgba(255, 255, 255, 50%);
       color: #1b1b1eba;
       position: fixed;
       left: 50%;

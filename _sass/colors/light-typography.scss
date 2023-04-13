@@ -30,9 +30,9 @@
   );
   --shimmer-bg: linear-gradient(
     90deg,
-    rgba(250, 250, 250, 0) 0%,
-    rgba(232, 230, 230, 1) 50%,
-    rgba(250, 250, 250, 0) 100%
+    rgba(250, 250, 250, 0%) 0%,
+    rgba(232, 230, 230, 100%) 50%,
+    rgba(250, 250, 250, 0%) 100%
   );
 
   /* Sidebar */
@@ -45,7 +45,7 @@
   /* Topbar */
   --topbar-text-color: rgb(78, 78, 78);
   --topbar-wrapper-bg: white;
-  --search-wrapper-bg: rgb(245, 245, 245, 0.5);
+  --search-wrapper-bg: rgb(245, 245, 245, 50%);
   --search-wrapper-border-color: rgb(245, 245, 245);
   --search-tag-bg: #f8f9fa;
   --search-icon-color: #c2c6cc;
@@ -65,11 +65,11 @@
   --btn-share-hover-color: var(--link-color);
   --card-hovor-bg: #eeeeee;
   --card-border-color: #ececec;
-  --card-box-shadow: rgba(234, 234, 234, 0.76);
+  --card-box-shadow: rgba(234, 234, 234, 76%);
   --label-color: #616161;
-  --relate-post-date: rgba(30, 55, 70, 0.4);
+  --relate-post-date: rgba(30, 55, 70, 40%);
   --footnote-target-bg: lightcyan;
-  --tag-bg: rgba(0, 0, 0, 0.075);
+  --tag-bg: rgba(0, 0, 0, 7.5%);
   --tag-border: #dee2e6;
   --tag-shadow: var(--btn-border-color);
   --tag-hover: rgb(222, 226, 230);
@@ -79,14 +79,14 @@
   --kbd-wrap-color: #bdbdbd;
   --kbd-text-color: var(--text-color);
   --kbd-bg-color: white;
-  --prompt-text-color: rgb(46, 46, 46, 0.77);
-  --prompt-tip-bg: rgb(123, 247, 144, 0.2);
+  --prompt-text-color: rgb(46, 46, 46, 77%);
+  --prompt-tip-bg: rgb(123, 247, 144, 20%);
   --prompt-tip-icon-color: #03b303;
   --prompt-info-bg: #e1f5fe;
   --prompt-info-icon-color: #0070cb;
   --prompt-warning-bg: rgb(255, 243, 205);
   --prompt-warning-icon-color: #ef9c03;
-  --prompt-danger-bg: rgb(248, 215, 218, 0.56);
+  --prompt-danger-bg: rgb(248, 215, 218, 56%);
   --prompt-danger-icon-color: #df3c30;
 
   [class^='prompt-'] {
@@ -102,7 +102,7 @@
   --categories-icon-hover-color: darkslategray;
 
   /* Archive */
-  --timeline-color: rgba(0, 0, 0, 0.075);
+  --timeline-color: rgba(0, 0, 0, 7.5%);
   --timeline-node-bg: #c2c6cc;
   --timeline-year-dot-color: #ffffff;
 } /* light-scheme */
