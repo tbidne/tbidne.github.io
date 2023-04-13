@@ -117,6 +117,7 @@ img {
     from {
       opacity: 0;
     }
+
     to {
       opacity: 1;
     }
@@ -126,6 +127,7 @@ img {
     from {
       opacity: 0;
     }
+
     to {
       opacity: 1;
     }
@@ -567,6 +569,7 @@ i {
     0% {
       transform: translateX(-100%);
     }
+
     100% {
       transform: translateX(100%);
     }
@@ -576,6 +579,7 @@ i {
     0% {
       transform: translateX(-100%);
     }
+
     100% {
       transform: translateX(100%);
     }
@@ -1029,15 +1033,19 @@ $sidebar-display: 'sidebar-display';
       &::-moz-placeholder {
         @include input-placeholder;
       }
+
       &::-webkit-input-placeholder {
         @include input-placeholder;
       }
+
       &:-ms-input-placeholder {
         @include input-placeholder;
       }
+
       &::-ms-input-placeholder {
         @include input-placeholder;
       }
+
       &::placeholder {
         @include input-placeholder;
       }
