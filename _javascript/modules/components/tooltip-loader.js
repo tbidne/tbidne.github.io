@@ -1,6 +1,6 @@
 /**
  * Initial Bootstrap Tooltip.
  */
-export function loadTooptip() {
+export function loadTooltip() {
   $('[data-toggle="tooltip"]').tooltip();
 }
