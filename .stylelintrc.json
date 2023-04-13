@@ -3,7 +3,6 @@
     "stylelint-config-standard-scss"
   ],
   "rules": {
-    "at-rule-no-vendor-prefix": null,
     "alpha-value-notation": null,
     "color-function-notation": null,
     "color-hex-length": null,

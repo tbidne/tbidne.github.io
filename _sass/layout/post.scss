@@ -215,7 +215,7 @@ h1 + .post-meta {
   }
 } /* .post-navigation */
 
-@-webkit-keyframes fade-up {
+@keyframes fade-up {
   from {
     opacity: 0;
     position: relative;
