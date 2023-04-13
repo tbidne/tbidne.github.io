@@ -1,0 +1,19 @@
+{
+  "extends": [
+    "stylelint-config-standard-scss"
+  ],
+  "rules": {
+    "at-rule-no-vendor-prefix": null,
+    "alpha-value-notation": null,
+    "color-function-notation": null,
+    "color-hex-length": null,
+    "no-descending-specificity": null,
+    "property-no-vendor-prefix": null,
+    "rule-empty-line-before": null,
+    "scss/operator-no-newline-after": null,
+    "selector-no-vendor-prefix": null,
+    "selector-not-notation": null,
+    "shorthand-property-no-redundant-values": null,
+    "value-no-vendor-prefix": null
+  }
+}
