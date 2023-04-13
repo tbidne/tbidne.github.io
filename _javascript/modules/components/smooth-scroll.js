@@ -65,7 +65,7 @@ export function smoothScroll() {
 
     $('html').animate(
       {
-        scrollTop: destOffset
+        scrollTop: destOffset,
       },
       500,
       () => {

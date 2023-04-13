@@ -31,12 +31,12 @@ Notice that the implication is one-way i.e. the converse is not necessarily true
 
 ## Monoidal Categories
 
-__Definition:__ A __monoidal category__ $$(C, \otimes, I)$$ is a category $$C$$ equipped with
+**Definition:** A **monoidal category** $$(C, \otimes, I)$$ is a category $$C$$ equipped with
 
-* $$\otimes : C \times C \rightarrow C$$, a bifunctor called the __monoidal product__.
-* $$I$$, an object in $$C$$ that behaves like the identity with $$\otimes$$.
+- $$\otimes : C \times C \rightarrow C$$, a bifunctor called the **monoidal product**.
+- $$I$$, an object in $$C$$ that behaves like the identity with $$\otimes$$.
 
-__Definition:__ A __monoid object__, or simply __monoid__, is an object $$A$$ in $$C$$ with two arrows:
+**Definition:** A **monoid object**, or simply **monoid**, is an object $$A$$ in $$C$$ with two arrows:
 
 $$
 \begin{align*}
@@ -45,7 +45,7 @@ $$
 \end{align*}
 $$
 
-__Example:__ $$(\textbf{Set}, \times, *)$$ is a monoidal category where $$\times$$ is cartesian product and $$*$$ is any singleton set. A monoid object in this category is a set $$A$$ with functions
+**Example:** $$(\textbf{Set}, \times, *)$$ is a monoidal category where $$\times$$ is cartesian product and $$*$$ is any singleton set. A monoid object in this category is a set $$A$$ with functions
 
 $$
 \begin{align*}
@@ -69,7 +69,7 @@ This gives us the monoidal structure and is equivalent to the more abstract defi
 
 ## Monads
 
-__Definition:__ Given a category $$C$$, a __monad__ is a triple $$(T, \eta, \mu)$$ with
+**Definition:** Given a category $$C$$, a **monad** is a triple $$(T, \eta, \mu)$$ with
 
 - $$T : C \rightarrow C$$, an endofunctor on $$C$$.
 - Natural transformations:
@@ -83,7 +83,7 @@ $$
 
 where $$1_C$$ is the identity functor on $$C$$ and $$T \circ T$$ is $$T$$ composed with itself via _functor_ composition. Note that $$T \circ T$$ is sometimes written as $$T^2$$.
 
-__Example:__ Again consider $$\textbf{Set}$$, and let $$T : \textbf{Set} \rightarrow \textbf{Set}$$ be the power set functor. Then $$(T, \eta, \mu)$$ is a monad on $$\textbf{Set}$$ where $$\eta$$ maps each $$a \in A$$ to $$\{a\}$$, and $$\mu$$ maps a nested set to its union. That is,
+**Example:** Again consider $$\textbf{Set}$$, and let $$T : \textbf{Set} \rightarrow \textbf{Set}$$ be the power set functor. Then $$(T, \eta, \mu)$$ is a monad on $$\textbf{Set}$$ where $$\eta$$ maps each $$a \in A$$ to $$\{a\}$$, and $$\mu$$ maps a nested set to its union. That is,
 
 $$
 \begin{align*}
@@ -94,7 +94,7 @@ $$
 
 ## Category of Endofunctors
 
-__Definition:__ Every category $$C$$ gives rise to a category of endofunctors $$\text{End}_C$$. The objects in this category are endofunctors $$T : C \rightarrow C$$, and the arrows are natural transformations.
+**Definition:** Every category $$C$$ gives rise to a category of endofunctors $$\text{End}_C$$. The objects in this category are endofunctors $$T : C \rightarrow C$$, and the arrows are natural transformations.
 
 ## Putting it all together
 
@@ -119,4 +119,4 @@ Remember this comment?
 
 This is due to there being more than one way of defining a "monoid in the category of endofunctors". We have defined the monoidal product $$\otimes$$ to be $$\circ$$, functor composition. In this case, yes, a monoid in this category is exactly a monad.
 
-But observe that this definition leaves open the possibility of using a different monoidal product. In particular, we could take $$\otimes$$ to be **Day Convolution**, sometimes written as $$\star$$. In this case we get a _different_ "monoid in the category of endofunctors", and in fact a monoid in this category is a __lax monoidal functor__, not a monad.
+But observe that this definition leaves open the possibility of using a different monoidal product. In particular, we could take $$\otimes$$ to be **Day Convolution**, sometimes written as $$\star$$. In this case we get a _different_ "monoid in the category of endofunctors", and in fact a monoid in this category is a **lax monoidal functor**, not a monad.

@@ -1,0 +1,19 @@
+# prettier does not handle liquid well
+_includes/*
+_layouts/*
+
+# scss files are already decently formatted, and prettier arguably makes
+# some patterns worse
+_sass/*
+
+# prettier parse errors
+assets/css/style.scss
+assets/img/*
+
+# generated files
+_site/*
+.jekyll-metadata/*
+.sass-cache/*
+assets/js/dist/*
+node_modules/*
+vendor/*

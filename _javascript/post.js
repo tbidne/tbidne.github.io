@@ -5,7 +5,7 @@ import {
   initClipboard,
   smoothScroll,
   initPageviews,
-  toc
+  toc,
 } from './modules/plugins';
 
 basic();

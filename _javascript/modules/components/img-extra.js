@@ -15,8 +15,8 @@ export function imgExtra() {
     zoom: {
       enabled: true,
       duration: 300,
-      easing: 'ease-in-out'
-    }
+      easing: 'ease-in-out',
+    },
   });
 
   /* Stop shimmer when image loaded */

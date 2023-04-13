@@ -17,7 +17,7 @@ export function back2top() {
   $('#back-to-top').on('click', () => {
     $('body,html').animate(
       {
-        scrollTop: 0
+        scrollTop: 0,
       },
       800
     );

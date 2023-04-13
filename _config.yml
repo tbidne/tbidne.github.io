@@ -4,8 +4,8 @@ description: >-
   Write an awesome description for your new site here. You can edit this
   line in _config.yml. It will appear in your document head meta (for
   Google search results) and in your feed.xml site description.
-baseurl: ""
-url: ""
+baseurl: ''
+url: ''
 github_username: tbidne
 github:
   username: tbidne
@@ -37,7 +37,7 @@ toc: true
 
 defaults:
   - scope:
-      path: ""
+      path: ''
       type: posts
     values:
       layout: post
@@ -45,7 +45,7 @@ defaults:
       toc: true
       permalink: /posts/:title/
   - scope:
-      path: ""
+      path: ''
       type: tabs
     values:
       layout: default
@@ -58,7 +58,7 @@ assets:
     env: # [development|production]
 
 theme_mode: # [dark | light]
-avatar: "/assets/img/avatar.png"
+avatar: '/assets/img/avatar.png'
 
 paginate: 5
 
@@ -83,17 +83,17 @@ projects:
     - title: Algebra Simple
       gh-repo: algebra-simple
       desc: A safe and more cohesive alternative to Haskell's default algebraic
-            representation, taking inspiration from abstract algebra.
+        representation, taking inspiration from abstract algebra.
 
     - title: SI Bytes
       gh-repo: si-bytes
       desc: Haskell library for type-safe byte operations i.e. ensures that
-           byte sizes are handled correctly.
+        byte sizes are handled correctly.
 
     - title: Monad Effects
       gh-repo: monad-effects
       desc: Haskell library for "effectful" programming based on the Monad
-           typeclass.
+        typeclass.
 
     - title: Nix Hs Shells
       gh-repo: nix-hs-tools

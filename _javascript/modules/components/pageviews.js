@@ -39,7 +39,7 @@ const PvOpts = (function () {
     },
     hasLocalMeta() {
       return hasContent('meta[name=pv-cache-path]');
-    }
+    },
   };
 })();
 
@@ -47,12 +47,12 @@ const PvStorage = (function () {
   const Keys = {
     KEY_PV: 'pv',
     KEY_PV_SRC: 'pv_src',
-    KEY_CREATION: 'pv_created_date'
+    KEY_CREATION: 'pv_created_date',
   };
 
   const Source = {
     LOCAL: 'same-origin',
-    PROXY: 'cors'
+    PROXY: 'cors',
   };
 
   function get(key) {
@@ -120,7 +120,7 @@ const PvStorage = (function () {
             return;
         }
       }
-    }
+    },
   };
 })(); /* PvStorage */
 
@@ -201,7 +201,7 @@ function fetchProxyPageviews() {
         console.log(
           'Failed to load pageviews from proxy server: ' + errorThrown
         );
-      }
+      },
     });
   }
 }

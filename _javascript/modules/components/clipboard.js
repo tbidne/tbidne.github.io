@@ -65,12 +65,12 @@ export function initClipboard() {
     target(trigger) {
       let codeBlock = trigger.parentNode.nextElementSibling;
       return codeBlock.querySelector('code .rouge-code');
-    }
+    },
   });
 
   $(btnSelector).tooltip({
     trigger: 'hover',
-    placement: 'left'
+    placement: 'left',
   });
 
   clipboard.on('success', (e) => {

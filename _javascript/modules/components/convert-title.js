@@ -34,7 +34,7 @@ export function convertTitle() {
 
   let options = {
     rootMargin: '-48px 0px 0px 0px', // 48px equals to the topbar height (3rem)
-    threshold: [0, 1]
+    threshold: [0, 1],
   };
 
   let observer = new IntersectionObserver((entries) => {

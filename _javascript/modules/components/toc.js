@@ -7,7 +7,7 @@ export function toc() {
       ignoreSelector: '[data-toc-skip]',
       headingSelector: 'h2, h3',
       orderedList: false,
-      scrollSmooth: false
+      scrollSmooth: false,
     });
   }
 }

@@ -14,25 +14,25 @@ function build(filename) {
       file: `${JS_DIST}/${filename}.min.js`,
       format: 'iife',
       name: 'Chirpy',
-      sourcemap: !isProd
+      sourcemap: !isProd,
     },
     watch: {
-      include: `${JS_SRC}/**`
+      include: `${JS_SRC}/**`,
     },
     plugins: [
       babel({
         babelHelpers: 'bundled',
         presets: ['@babel/env'],
-        plugins: ['@babel/plugin-proposal-class-properties']
+        plugins: ['@babel/plugin-proposal-class-properties'],
       }),
       license({
         banner: {
           commentStyle: 'ignored',
-          content: { file: path.join(__dirname, JS_SRC, '_copyright') }
-        }
+          content: { file: path.join(__dirname, JS_SRC, '_copyright') },
+        },
       }),
-      isProd && terser()
-    ]
+      isProd && terser(),
+    ],
   };
 }
 
@@ -41,5 +41,5 @@ export default [
   build('categories'),
   build('page'),
   build('post'),
-  build('misc')
+  build('misc'),
 ];
