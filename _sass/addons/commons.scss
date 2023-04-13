@@ -1029,22 +1029,6 @@ $sidebar-display: 'sidebar-display';
     background: center;
 
     &.form-control {
-      &::-moz-placeholder {
-        @include input-placeholder;
-      }
-
-      &::-webkit-input-placeholder {
-        @include input-placeholder;
-      }
-
-      &:-ms-input-placeholder {
-        @include input-placeholder;
-      }
-
-      &::-ms-input-placeholder {
-        @include input-placeholder;
-      }
-
       &::placeholder {
         @include input-placeholder;
       }
