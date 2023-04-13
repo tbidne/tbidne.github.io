@@ -187,7 +187,7 @@
     justify-content: space-evenly;
 
     .page-item {
-      &:not(:first-child):not(:last-child) {
+      &:not(:first-child, :last-child) {
         display: none;
       }
     }

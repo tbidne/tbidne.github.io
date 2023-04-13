@@ -408,7 +408,7 @@ i {
   p {
     > img[data-src],
     > a.popup {
-      &:not(.normal):not(.left):not(.right) {
+      &:not(.normal, .left, .right) {
         @include align-center;
       }
     }
