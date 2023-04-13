@@ -17,7 +17,14 @@
 
 This is my jekyll website, based on the terrific template at https://github.com/cotes2020/jekyll-theme-chirpy.
 
-# Build
+# Initial Build
+
+Development uses [nix flakes](https://nixos.wiki/wiki/Flakes). Nix is used to provide dependencies, so if nix is not available, the following will have to be provided manually:
+
+* `bundle`
+* `jekyll`
+* `nodejs`
+* `ruby`
 
 1. Enter nix shell
 
@@ -31,17 +38,21 @@ This is my jekyll website, based on the terrific template at https://github.com/
    bundle install
    ```
 
-1. Build static assets
-
-   ```
-   npm install
-   npm run build
-   ```
-
 1. Run
 
    ```
-   ./bin/serve
+   npm run serve
    ```
 
    Navigate to http://localhost:4000/ to verify the site is up.
+
+## Changes
+
+If any changes are made to `_javascript/*` then the static assets will have to be rebuilt:
+
+```
+npm install
+npm run build
+```
+
+Otherwise, the server will watch for changes while running with `npm run serve`. Changes to `_config.yml` will require manually restarting the server.
