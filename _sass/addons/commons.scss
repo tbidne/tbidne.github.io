@@ -234,7 +234,6 @@ i {
   margin-bottom: 4rem;
 
   &:only-child {
-    position: -webkit-sticky;
     position: sticky;
   }
 
@@ -322,8 +321,6 @@ i {
     &:target:not([scroll-focus]),
     &[scroll-focus='true'] > p {
       background-color: var(--footnote-target-bg);
-      width: -moz-fit-content;
-      width: -webkit-fit-content;
       width: fit-content;
       transition: background-color 1.5s ease-in-out;
     }

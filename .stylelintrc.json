@@ -4,8 +4,7 @@
   ],
   "rules": {
     "color-function-notation": null,
-    "color-hex-length": null,
-    "no-descending-specificity": null,
-    "value-no-vendor-prefix": null
+    "color-hex-length": "long",
+    "no-descending-specificity": null
   }
 }
