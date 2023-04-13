@@ -1,27 +1,14 @@
-# Welcome to Jekyll!
-#
-# This config file is meant for settings that affect your whole blog, values
-# which you are expected to set up once and rarely edit after that. If you find
-# yourself editing this file very often, consider using Jekyll's data files
-# feature for the data you need to update frequently.
-#
-# For technical reasons, this file is *NOT* reloaded automatically when you use
-# 'bundle exec jekyll serve'. If you change this file, please restart the server process.
-
-# Site settings
-# These are used to personalize your new site. If you look in the HTML files,
-# you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
-# You can create any custom variable you would like, and they will be accessible
-# in the templates via {{ site.myvariable }}.
-title: Your awesome title
-email: your-email@example.com
-description: >- # this means to ignore newlines until "baseurl:"
+title: Thomas Bidne
+email: tbidne@gmail.com
+description: >-
   Write an awesome description for your new site here. You can edit this
   line in _config.yml. It will appear in your document head meta (for
   Google search results) and in your feed.xml site description.
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
-github_username:  tbidne
+baseurl: ""
+url: ""
+github_username: tbidne
+github:
+  username: tbidne
 
 lang: en
 
@@ -35,13 +22,11 @@ social:
 # Build settings
 markdown: kramdown
 theme:
-#theme: blah
 plugins:
   - jekyll-feed
 
 sass:
   sass_dir: _sass
-  #style: compressed
 
 collections:
   tabs:
@@ -52,18 +37,16 @@ toc: true
 
 defaults:
   - scope:
-      path: "" # An empty string here means all files in the project
+      path: ""
       type: posts
     values:
       layout: post
-      comments: true # Enable comments in posts.
-      toc: true # Display TOC column in posts.
-      # DO NOT modify the following parameter unless you are confident enough
-      # to update the code of all other post links in this project.
+      comments: false
+      toc: true
       permalink: /posts/:title/
   - scope:
       path: ""
-      type: tabs # see `site.collections`
+      type: tabs
     values:
       layout: default
       # Maps /_tabs/t to /t
@@ -71,22 +54,59 @@ defaults:
 
 assets:
   self_host:
-    enabled: # boolean, keep empty means false
-    # specify the Jekyll environment, empty means both
-    # only works if `assets.self_host.enabled` is 'true'
+    enabled: false
     env: # [development|production]
 
 theme_mode: # [dark | light]
 avatar: "/assets/img/avatar.png"
 
+paginate: 5
+
+projects:
+  apps:
+    - title: Shrun
+      gh-repo: shrun
+      desc: A tool for running and timing multiple shell commands concurrently.
+
+    - title: Navi
+      gh-repo: navi
+      desc: A tool for easily creating desktop notifications for arbitrary actions.
+
+    - title: Safe rm
+      gh-repo: safe-rm
+      desc: A safer alternative to the venerable unix tool 'rm'.
+
+    - title: Time Conv
+      gh-repo: time-conv
+      desc: CLI tool for easy timezone conversion.
+  libs:
+    - title: Algebra Simple
+      gh-repo: algebra-simple
+      desc: A safe and more cohesive alternative to Haskell's default algebraic
+            representation, taking inspiration from abstract algebra.
+
+    - title: SI Bytes
+      gh-repo: si-bytes
+      desc: Haskell library for type-safe byte operations i.e. ensures that
+           byte sizes are handled correctly.
+
+    - title: Monad Effects
+      gh-repo: monad-effects
+      desc: Haskell library for "effectful" programming based on the Monad
+           typeclass.
+
+    - title: Nix Hs Shells
+      gh-repo: nix-hs-tools
+      desc: Nix shells for Haskell development.
+
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
 # to override the default setting.
-# exclude:
-#   - Gemfile
-#   - Gemfile.lock
-#   - node_modules
-#   - vendor/bundle/
-#   - vendor/cache/
-#   - vendor/gems/
-#   - vendor/ruby/
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/

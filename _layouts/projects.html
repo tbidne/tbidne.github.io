@@ -1,0 +1,48 @@
+---
+layout: project
+---
+
+<div id="project-list">
+  <p>This page links to some of my open-source projects.</p>
+  <h2>Applications</h2>
+  <p>Applications I have written, primarily for the command-line.</p>
+  {% for project in site.projects.apps %}
+    <div class="card project-preview">
+      <a href="https://www.github.com/tbidne/{{ project.gh-repo }}#readme" target="_blank">
+        <div class="card-body">
+          <h1 class="card-title">
+            {{ project.title }}
+          </h1>
+          <div class="card-text project-content">
+            <p>
+              {% include no-linenos.html content=project.content %}
+              {{ project.desc | markdownify | strip_html | escape }}
+            </p>
+          </div>
+        </div>
+      </a>
+    </div>
+  {% endfor %}
+  <h2>Libraries</h2>
+  <p>
+    Libraries used both in my applications and as general open-source
+    contributions.
+  </p>
+  {% for project in site.projects.libs %}
+    <div class="card project-preview">
+      <a href="https://www.github.com/tbidne/{{ project.gh-repo }}#readme" target="_blank">
+        <div class="card-body">
+          <h1 class="card-title">
+            {{ project.title }}
+          </h1>
+          <div class="card-text project-content">
+            <p>
+              {% include no-linenos.html content=project.content %}
+              {{ project.desc | markdownify | strip_html | escape }}
+            </p>
+          </div>
+        </div>
+      </a>
+    </div>
+  {% endfor %}
+</div>

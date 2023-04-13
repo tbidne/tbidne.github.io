@@ -2,7 +2,9 @@
 title: Monads are just monoids in the category of endofunctors, what's the problem?
 date: 2020-06-29 12:00:00 +1200
 categories: [Math]
-tags: [category theory, haskell, math]
+tags: [category theory, math]
+pin: false
+hidden: false
 render_with_liquid: false
 last_modified_at: 2023-06-29 12:00:00 +1200
 ---

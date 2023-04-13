@@ -1,4 +1,5 @@
 ---
 layout: projects
-order: 2
+icon: fas fa-stream
+order: 1
 ---
