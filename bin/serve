@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-#bundle exec jekyll s -H 0.0.0.0 -P 4000 -l --safe
-bundle exec jekyll serve -H 0.0.0.0 -P 4000
