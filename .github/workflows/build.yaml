@@ -1,4 +1,4 @@
-name: style
+name: build
 
 on:
   push:
@@ -13,33 +13,23 @@ on:
   workflow_dispatch:
 
 jobs:
-  check-style:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.5.0
 
-      - uses: actions/setup-node@v3
+      - name: Setup nix
+        uses: cachix/install-nix-action@v20
         with:
-          node-version: 18
-
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.1.4'
-          # If we enable this, runs bundle install automatically and caches
-          # gems. Consider enabling this.
-          #
-          #bundler-cache: true
+          nix_path: nixpkgs=https://github.com/NixOS/nixpkgs/archive/b39924fc7764c08ae3b51beef9a3518c414cdb7d.tar.gz
+          extra_nix_config: |
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
       - name: Build gems
-        run: bundle install
+        run: nix develop -c bash -c "bundle install --gemfile=Gemfile"
 
       - name: Build static assets
-        run: |
-          npm install
-          npm run build
-
-      - name: Build site
-        run: jekyll build
+        run: nix develop -c bash -c "npm install && npm run build"
 
       - name: Serve
-        run: ./bin/serve_test
+        run: nix develop -c bash -c "./bin/serve_test"
