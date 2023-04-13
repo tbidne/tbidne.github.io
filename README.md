@@ -2,8 +2,8 @@
 
 # My Jekyll Website
 
-[![release](https://img.shields.io/badge/release-0.1-orange)](http://tbidne.github.io)
-[![MIT](https://img.shields.io/github/license/tbidne/tbidne.github.io?color=blue)](https://opensource.org/licenses/MIT)
+[![Website](https://img.shields.io/website?up_color=2db74d&down_color=cd2735&label=tbidne.github.io&url=https%3A%2F%2Ftbidne.github.io&labelColor=2f353e)](https://tbidne.github.io)
+[![MIT](https://img.shields.io/github/license/tbidne/tbidne.github.io?color=blue&labelColor=2f353e)](https://opensource.org/licenses/MIT)
 
 [![pages-build-deployment](https://github.com/tbidne/tbidne.github.io/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/tbidne/tbidne.github.io/actions/workflows/pages/pages-build-deployment)
 [![build](https://github.com/tbidne/tbidne.github.io/actions/workflows/build.yaml/badge.svg)](https://github.com/tbidne/tbidne.github.io/actions/workflows/build.yaml)
