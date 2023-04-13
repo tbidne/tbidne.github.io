@@ -6,7 +6,6 @@
     "color-function-notation": null,
     "color-hex-length": null,
     "no-descending-specificity": null,
-    "property-no-vendor-prefix": null,
     "rule-empty-line-before": null,
     "scss/operator-no-newline-after": null,
     "selector-no-vendor-prefix": null,

@@ -88,14 +88,12 @@ img {
 
   &[data-src] {
     &.lazyloaded {
-      -webkit-animation: fade-in 0.4s ease-in;
       animation: fade-in 0.4s ease-in;
     }
 
     &[data-lqip='true'] {
       &.lazyload,
       &.lazyloading {
-        -webkit-filter: blur(20px);
         filter: blur(20px);
       }
     }
@@ -108,7 +106,6 @@ img {
     }
 
     &.shadow {
-      -webkit-filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 8%));
       filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 8%));
       box-shadow: none !important; /* cover the Bootstrap 4.6.1 styles */
     }
@@ -563,28 +560,23 @@ i {
     background: var(--shimmer-bg);
     height: 100%;
     width: 100%;
-    -webkit-animation: shimmer 1s infinite;
     animation: shimmer 1s infinite;
   }
 
   @keyframes shimmer {
     0% {
-      -webkit-transform: translateX(-100%);
       transform: translateX(-100%);
     }
     100% {
-      -webkit-transform: translateX(100%);
       transform: translateX(100%);
     }
   }
 
   @keyframes shimmer {
     0% {
-      -webkit-transform: translateX(-100%);
       transform: translateX(-100%);
     }
     100% {
-      -webkit-transform: translateX(100%);
       transform: translateX(100%);
     }
   }
@@ -749,7 +741,6 @@ $sidebar-display: 'sidebar-display';
       border-radius: 50%;
       border: 2px solid rgba(222, 222, 222, 70%);
       overflow: hidden;
-      -webkit-transform: translateZ(0);
       transform: translateZ(0); /* fixed the zoom in Safari */
       transition: border-color 0.35s ease-in-out;
 
@@ -766,7 +757,6 @@ $sidebar-display: 'sidebar-display';
       transition: transform 0.5s, -webkit-transform 0.5s;
 
       &:hover {
-        -webkit-transform: scale(1.2);
         transform: scale(1.2);
       }
     }
@@ -792,9 +782,6 @@ $sidebar-display: 'sidebar-display';
     word-spacing: 1px;
     margin: 0.2rem 1.5rem 0.5rem 1.5rem;
     min-height: 3rem; /* avoid vertical shifting in multi-line words */
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
   }
 
@@ -1205,7 +1192,7 @@ $sidebar-display: 'sidebar-display';
   transition: -webkit-transform 0.2s ease-out;
   transition: transform 0.2s ease-out;
   transition: transform 0.2s ease-out, -webkit-transform 0.2s ease-out;
-  -webkit-transition: transform 0.2s ease-out;
+  transition: transform 0.2s ease-out;
 
   i {
     line-height: $size;
@@ -1216,7 +1203,6 @@ $sidebar-display: 'sidebar-display';
 
 #back-to-top:hover {
   transform: translate3d(0, -5px, 0);
-  -webkit-transform: translate3d(0, -5px, 0);
 }
 
 #notification {
@@ -1257,16 +1243,13 @@ $sidebar-display: 'sidebar-display';
       display: block;
       min-width: 20rem;
       border-radius: 0.5rem;
-      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
       background-color: rgba(255, 255, 255, 50%);
       color: #1b1b1eba;
       position: fixed;
       left: 50%;
       bottom: 20%;
-      -webkit-transform: translateX(-50%);
       transform: translateX(-50%);
-      -webkit-animation: popup 0.8s;
       animation: popup 0.8s;
     }
   }
@@ -1370,23 +1353,20 @@ $sidebar-display: 'sidebar-display';
 
   [#{$sidebar-display}] {
     #sidebar {
-      -webkit-transform: translateX(0);
       transform: translateX(0);
     }
 
     #topbar-wrapper,
     #main-wrapper,
     footer {
-      -webkit-transform: translateX(#{$sidebar-width});
       transform: translateX(#{$sidebar-width});
     }
   }
 
   #sidebar {
-    @include slide;
+    @include slide; /* hide */
 
-    transform: translateX(-#{$sidebar-width}); /* hide */
-    -webkit-transform: translateX(-#{$sidebar-width});
+    transform: translateX(-#{$sidebar-width});
 
     .cursor {
       transition: none;
@@ -1765,7 +1745,6 @@ $sidebar-display: 'sidebar-display';
           position: absolute;
           top: 50%;
           left: 50%;
-          -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
         }
       }

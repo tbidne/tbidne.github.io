@@ -103,7 +103,6 @@
 
   .post img[data-src] {
     &.lazyloaded {
-      -webkit-filter: brightness(95%);
       filter: brightness(95%);
     }
   }

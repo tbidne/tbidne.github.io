@@ -37,7 +37,6 @@
 
   img {
     aspect-ratio: 40 / 21;
-    -o-object-fit: cover;
     object-fit: cover;
 
     @extend %rounded;
@@ -89,9 +88,6 @@ h1 + .post-meta {
 
   .share-wrapper {
     vertical-align: middle;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
 
     .share-icons {
@@ -249,7 +245,6 @@ h1 + .post-meta {
   position: sticky;
   top: 4rem;
   transition: top 0.2s ease-in-out;
-  -webkit-animation: fade-up 0.8s;
   animation: fade-up 0.8s;
 
   ul {
@@ -345,7 +340,6 @@ h1 + .post-meta {
     }
 
     &:hover {
-      -webkit-transform: translate3d(0, -3px, 0);
       transform: translate3d(0, -3px, 0);
       box-shadow: 0 10px 15px -4px rgba(0, 0, 0, 15%);
     }

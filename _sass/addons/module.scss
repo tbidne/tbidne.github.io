@@ -73,8 +73,6 @@
 }
 
 %no-cursor {
-  -webkit-user-select: none;
-  -moz-user-select: none;
   user-select: none;
 }
 
@@ -107,8 +105,6 @@
 
 %sidebar-links {
   color: rgba(117, 117, 117, 90%);
-  -webkit-user-select: none;
-  -moz-user-select: none;
   user-select: none;
 }
 
@@ -146,7 +142,6 @@
 @mixin align-center {
   position: relative;
   left: 50%;
-  -webkit-transform: translateX(-50%);
   transform: translateX(-50%);
 }
 
