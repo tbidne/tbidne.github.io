@@ -1,0 +1,45 @@
+name: style
+
+on:
+  push:
+    branches:
+      - main
+      - ci
+
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  check-style:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.5.0
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1.4'
+          # If we enable this, runs bundle install automatically and caches
+          # gems. Consider enabling this.
+          #
+          #bundler-cache: true
+
+      - name: Build gems
+        run: bundle install
+
+      - name: Build static assets
+        run: |
+          npm install
+          npm run build
+
+      - name: Build site
+        run: jekyll build
+
+      - name: Serve
+        run: ./bin/serve_test

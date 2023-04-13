@@ -17,8 +17,8 @@ while [ $# -gt 0 ]; do
     echo "             [-h|--help]"
     echo ""
     echo "Available options:"
-    echo -e "  -a,--all    \tIf enabled, also deletes vendor/. The next run will require"
-    echo -e "              \tbundle install.\n"
+    echo -e "  -a,--all    \tIf enabled, also deletes node_modules/ and vendor/."
+    echo -e "              \tThe next run will require npm install and bundle install.\n"
     exit 0
   elif [[ $1 == "--all" || $1 == "-a" ]]; then
     all=1
@@ -34,5 +34,6 @@ del_exists "_site"
 del_exists ".sass-cache"
 
 if [[ $all = 1 ]]; then
+  del_exists "node_modules"
   del_exists "vendor"
 fi

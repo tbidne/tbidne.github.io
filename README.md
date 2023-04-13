@@ -3,10 +3,11 @@
 # My Jekyll Website
 
 [![release](https://img.shields.io/badge/release-0.1-orange)](http://tbidne.github.io)
-[![MIT](https://img.shields.io/github/license/tbidne/hs-template?color=blue)](https://opensource.org/licenses/MIT)
+[![MIT](https://img.shields.io/github/license/tbidne/tbidne.github.io?color=blue)](https://opensource.org/licenses/MIT)
 
 [![pages-build-deployment](https://github.com/tbidne/tbidne.github.io/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/tbidne/tbidne.github.io/actions/workflows/pages/pages-build-deployment)
-[![style](http://img.shields.io/github/actions/workflow/status/tbidne/hs-template/style.yaml?branch=main&label=style&logoColor=white&labelColor=2f353c)](https://github.com/tbidne/hs-template/actions/workflows/style.yaml)
+[![build](http://img.shields.io/github/actions/workflow/status/tbidne/tbidne.github.io/build.yaml?branch=main&label=build&logoColor=white&labelColor=2f353c)](https://github.com/tbidne/tbidne.github.io/actions/workflows/build.yaml)
+[![style](http://img.shields.io/github/actions/workflow/status/tbidne/tbidne.github.io/style.yaml?branch=main&label=style&logoColor=white&labelColor=2f353c)](https://github.com/tbidne/tbidne.github.io/actions/workflows/style.yaml)
 
 </div>
 

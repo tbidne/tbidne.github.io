@@ -20,7 +20,9 @@
     "fmtc": "npx prettier --check .",
     "fmt": "npx prettier -w .",
     "lintc_css": "npx stylelint _sass/**/*.scss",
-    "lint_css": "npx stylelint _sass/**/*.scss --fix"
+    "lint_css": "npx stylelint _sass/**/*.scss --fix",
+    "clean": "bin/clean",
+    "serve": "bundle exec jekyll serve -H 0.0.0.0 -P 4000"
   },
   "devDependencies": {
     "@babel/core": "^7.21.3",
