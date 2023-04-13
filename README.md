@@ -3,8 +3,10 @@
 # My Jekyll Website
 
 [![release](https://img.shields.io/badge/release-0.1-orange)](http://tbidne.github.io)
-[![pages-build-deployment](https://github.com/tbidne/tbidne.github.io/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/tbidne/tbidne.github.io/actions/workflows/pages/pages-build-deployment)
 [![MIT](https://img.shields.io/github/license/tbidne/tbidne.github.io?color=blue)](https://opensource.org/licenses/MIT)
+
+[![pages-build-deployment](https://github.com/tbidne/tbidne.github.io/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/tbidne/tbidne.github.io/actions/workflows/pages/pages-build-deployment)
+[![build](https://github.com/tbidne/tbidne.github.io/actions/workflows/build.yaml/badge.svg)](https://github.com/tbidne/tbidne.github.io/actions/workflows/build.yaml)
 
 </div>
 
