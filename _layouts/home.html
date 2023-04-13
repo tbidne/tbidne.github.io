@@ -8,7 +8,20 @@ layout: page
 </div>
   
 {% assign pinned = site.posts | where: 'pin', 'true' %}
+
+{% comment %}
 {% assign default = site.posts | where_exp: 'item', 'item.pin != true and item.hidden != true' %}
+{% endcomment %}
+
+<!--
+This tortured way of doing this is due to jekyll < 4 (what gh-pages currently
+uses) not supporting 'and' in these filters (gives an error like 'Expected
+end_of_string but found id').
+
+Once we can upgrade jekyll to 4+ we can use the uncommented logic above
+-->
+{% assign default_non_pinned = site.posts | where_exp: 'item', 'item.pin != true' %}
+{% assign default = default_non_pinned | where_exp: 'item', 'item.hidden != true' %}
 
 {% assign posts = '' | split: '' %}
 
