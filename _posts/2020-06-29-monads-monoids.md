@@ -25,7 +25,7 @@ We will review the definitions in light detail, assuming familiarity. We will al
 
 Or in symbols,
 
-$$ M \text{ is a monad} \implies M \text{ is a monoid in the category of endofunctors}. $$
+> $$M$$ is a monad $$\implies M$$ is a monoid in the category of endofunctors.
 
 Notice that the implication is one-way i.e. the converse is not necessarily true. More on this later.
 
