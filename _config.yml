@@ -96,7 +96,7 @@ projects:
         typeclass.
 
     - title: Nix Hs Shells
-      gh-repo: nix-hs-tools
+      gh-repo: nix-hs-shells
       desc: Nix shells for Haskell development.
 
 # Exclude from processing.

@@ -9,15 +9,15 @@ render_with_liquid: false
 last_modified_at: 2023-06-29 12:00:00 +1200
 ---
 
-The title is from James Fry's classic [A Brief, Incomplete, and Mostly Wrong History of Programming Languages](https://james-iry.blogspot.com/2009/05/brief-incomplete-and-mostly-wrong.html), an hilarious rundown of various programming languages. The statement was lifted from an observation in Saunders Mac Lane's _Categories for The Working Mathematician_:
+## Introduction
+
+The title is from James Iry's classic [A Brief, Incomplete, and Mostly Wrong History of Programming Languages](https://james-iry.blogspot.com/2009/05/brief-incomplete-and-mostly-wrong.html), an hilarious rundown of various programming languages. The statement was lifted from an observation in Saunders Mac Lane's _Categories for The Working Mathematician_:
 
 > All told, a monad in X is just a monoid in the category of endofunctors of X, with product × replaced by composition of endofunctors and unit set by the identity endofunctor.
 
 Monads are known for being difficult to learn, and this phrase is a well-known joke in the functional programming community, the joke being that it doesn't make sense to anyone who doesn't already understand it.
 
-The goal is to explain this statement to someone who knows some category theory (e.g. the definition of category, functor), but has yet to put the pieces together.
-
-<!--more-->
+The goal of this post is to explain this statement to someone who knows some category theory (e.g. the definition of category, functor), but has yet to put the pieces together.
 
 We will review the definitions in light detail, assuming familiarity. We will also omit some technical requirements, such as commutative diagrams and coherence conditions. To start, we will slightly amend the statement for clarity:
 
@@ -29,7 +29,7 @@ Or in symbols,
 
 Notice that the implication is one-way i.e. the converse is not necessarily true. More on this later.
 
-## Monoidal Categories
+## Monoidal categories
 
 **Definition:** A **monoidal category** $$(C, \otimes, I)$$ is a category $$C$$ equipped with
 
@@ -65,7 +65,7 @@ $$
 \end{align*}
 $$
 
-This gives us the monoidal structure and is equivalent to the more abstract definition given above.
+This gives the monoidal structure and is equivalent to the more abstract definition given above.
 
 ## Monads
 
@@ -92,7 +92,7 @@ $$
 \end{align*}
 $$
 
-## Category of Endofunctors
+## Category of endofunctors
 
 **Definition:** Every category $$C$$ gives rise to a category of endofunctors $$\text{End}_C$$. The objects in this category are endofunctors $$T : C \rightarrow C$$, and the arrows are natural transformations.
 
@@ -117,6 +117,6 @@ Remember this comment?
 
 > Notice that the implication is one-way i.e. the converse is not necessarily true.
 
-This is due to there being more than one way of defining a "monoid in the category of endofunctors". We have defined the monoidal product $$\otimes$$ to be $$\circ$$, functor composition. In this case, yes, a monoid in this category is exactly a monad.
+This is due to there being more than one way of defining a "monoid in the category of endofunctors". We have taken the monoidal product $$\otimes$$ to be $$\circ$$, functor composition. In this case, yes, a monoid in this category is exactly a monad.
 
-But observe that this definition leaves open the possibility of using a different monoidal product. In particular, we could take $$\otimes$$ to be **Day Convolution**, sometimes written as $$\star$$. In this case we get a _different_ "monoid in the category of endofunctors", and in fact a monoid in this category is a **lax monoidal functor**, not a monad.
+But observe that this definition leaves open the possibility of using a different monoidal product. In particular, we could take $$\otimes$$ to be [**Day Convolution**](https://en.wikipedia.org/wiki/Day_convolution), sometimes written as $$\star$$. In this case we get a _different_ "monoid in the category of endofunctors", and in fact a monoid in this category is a **lax monoidal functor**, not a monad.

@@ -45,7 +45,7 @@ Abstract Algebra and Haskell naturally led me to Category Theory. It took a long
 
 Along with Abstract Algebra, Number Theory was the first area of math that caught my interest. Gauss' observation that Euler's totient function satisfies
 
-$$ \sum_{d | n} \varphi (d) = n $$
+$$ \sum\_{d | n} \varphi (d) = n $$
 
 immediately made the impression _wait how could that possibly be true_. I like [Ireland and Rosen](https://www.amazon.com/Classical-Introduction-Modern-Graduate-Mathematics/dp/038797329X) for its mix of number theory and algebra, though I have only read the first half.
 

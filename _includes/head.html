@@ -65,7 +65,7 @@
     <link rel="stylesheet" href="{{ site.data.assets[origin].toc.css | relative_url }}">
   {% endif %}
 
-  {% if page.layout == 'page' or page.layout == 'post' %}
+  {% if page.layout == 'page' or page.layout == 'post' or page.layout == 'page_toc' %}
     <!-- Manific Popup -->
     <link rel="stylesheet" href="{{ site.data.assets[origin].magnific-popup.css | relative_url }}">
   {% endif %}

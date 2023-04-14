@@ -9,7 +9,7 @@
   {% endif %}
 {% endif %}
 
-{% if page.layout == 'post' or page.layout == 'page' %}
+{% if page.layout == 'post' or page.layout == 'page' or page.layout == 'page_toc' %}
   <!-- image lazy-loading & popup & clipboard -->
   {% assign _urls = site.data.assets[origin]['magnific-popup'].js
     | append: ','
@@ -43,7 +43,7 @@
 {% endif %}
 
 {% case page.layout %}
-  {% when 'categories', 'post', 'page' %}
+  {% when 'categories', 'post', 'page_toc', 'page' %}
     {% assign type = page.layout %}
   {% when 'home', 'archives', 'category', 'tag' %}
     {% assign type = 'misc' %}

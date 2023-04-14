@@ -40,6 +40,7 @@ export default [
   build('commons'),
   build('categories'),
   build('page'),
+  build('page_toc'),
   build('post'),
   build('misc'),
 ];

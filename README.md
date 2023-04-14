@@ -21,10 +21,10 @@ This is my jekyll website, based on the terrific template at https://github.com/
 
 Development uses [nix flakes](https://nixos.wiki/wiki/Flakes). Nix is used to provide dependencies, so if nix is not available, the following will have to be provided manually:
 
-* `bundle`
-* `jekyll`
-* `nodejs`
-* `ruby`
+- `bundle`
+- `jekyll`
+- `nodejs`
+- `ruby`
 
 1. Enter nix shell
 
@@ -46,7 +46,9 @@ Development uses [nix flakes](https://nixos.wiki/wiki/Flakes). Nix is used to pr
 
    Navigate to http://localhost:4000/ to verify the site is up.
 
-## Changes
+## Misc
+
+### Static assets
 
 If any changes are made to `_javascript/*` then the static assets will have to be rebuilt:
 
@@ -54,5 +56,3 @@ If any changes are made to `_javascript/*` then the static assets will have to b
 npm install
 npm run build
 ```
-
-Otherwise, the server will watch for changes while running with `npm run serve`. Changes to `_config.yml` will require manually restarting the server.
