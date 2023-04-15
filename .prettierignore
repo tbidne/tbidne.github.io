@@ -9,6 +9,7 @@ _sass/*
 # prettier parse errors
 assets/css/style.scss
 assets/img/*
+assets/js/data/search.json
 
 # generated files
 _site/*
