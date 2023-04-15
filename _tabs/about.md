@@ -1,7 +1,7 @@
 ---
 layout: page
 icon: fas fa-about
-order: 4
+order: 5
 ---
 
 <img src="/assets/img/banner_4k.png"/>
