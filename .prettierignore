@@ -16,5 +16,6 @@ _site/*
 .jekyll-metadata/*
 .sass-cache/*
 assets/js/dist/*
+docs/*
 node_modules/*
 vendor/*

@@ -1,0 +1,42 @@
+{
+  "name": "tbidne-jekyll",
+  "version": "0.0.1",
+  "description": "A Jekyll website",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tbidne/tbidne.github.io.git"
+  },
+  "author": "Thomas Bidne",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tbidne/tbidne.github.io/issues"
+  },
+  "homepage": "https://github.com/tbidne/tbidne.github.io/",
+  "scripts": {
+    "prebuild": "npx rimraf assets/js/dist",
+    "build": "NODE_ENV=production npx rollup -c --bundleConfigAsCjs",
+    "prewatch": "npx rimraf assets/js/dist",
+    "watch": "npx rollup -c --bundleConfigAsCjs -w",
+    "fmtc": "npx prettier --check .",
+    "fmt": "npx prettier -w .",
+    "lintc_css": "npx stylelint _sass/**/*.scss",
+    "lint_css": "npx stylelint _sass/**/*.scss --fix",
+    "clean": "bin/clean",
+    "test": "bin/serve_test",
+    "serve": "bundle exec jekyll serve -H 0.0.0.0 -P 4000"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.21.3",
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/preset-env": "^7.20.2",
+    "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-terser": "^0.4.0",
+    "prettier": "^2.8.7",
+    "rimraf": "^4.4.1",
+    "rollup": "^3.20.2",
+    "rollup-plugin-license": "^3.0.1",
+    "stylelint": "^15.4.0",
+    "stylelint-config-standard": "^32.0.0",
+    "stylelint-config-standard-scss": "^7.0.1"
+  }
+}
