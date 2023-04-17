@@ -8,9 +8,26 @@ order: 4
 
 My name is Thomas Bidne, and I am a software engineer with 10 years of professional experience. I have been writing code since I was 14, for both academic and personal reasons.
 
-I write code nearly every day, whether it is paid work, open-source contributions, or just plain experimentation for fun 🙂.
+I write code most days, whether it is paid work, open-source contributions, or just plain experimentation for fun 🙂.
 
-My programming experience has been broad; while these days my bread-and-butter is building systems with strong correctness guarantees (with e.g. `haskell` and `nix`), I have extensive experience with both low-level code (e.g. `C++` distributed systems) and typical web development. (`Java/typescript`, `Angular`, `React`).
+My programming experience is broad. Briefly, I have worked in the following areas:
+
+- FinTech (with a heavy emphasis on correctness)
+- Web programming:
+  - Data processing and visualization
+  - Applications modeling complex workflow
+  - Personal websites
+- Distributed simulations
+
+This has required extensive usage of the following technologies:
+
+- Programming languages: Haskell, Java, Java/Typescript, Python, C++.
+- Web frameworks: Angular (JS), Node, React
+- Databases: PostgreSQL, Oracle, SQLite
+- DevOps: Nix, Docker, OpenShift
+- CI/CD: Github Actions, Jenkins, Gitlab
+
+See my [Professional Experience](#professional_experience) for more details.
 
 ## Education
 
@@ -38,11 +55,11 @@ For **Platonic.Systems** I have worked with multiple clients. Below are short de
 
    My most recent work has been in the "smart-contract" space i.e. implementing financial systems that come with rigorous guarantees. This includes, for instance, maintaining system invariants e.g. that transactions are "atomic" i.e. either fully-complete or encounter some error. This work has primarily used Haskell and Nix, both with large, open-source projects (i.e. [cardano](<https://en.wikipedia.org/wiki/Cardano_(blockchain_platform)>)) and custom, private ones.
 
-5. Data Visualization And Machine learning
+3. Data Visualization And Machine learning
 
    This client wanted a website that could make market predictions for their product line, based on sales data and machine learning. I designed and implemented the website, using Python and the [dash](https://plotly.com/dash/) data visualization framework, per the client's wishes. I also implemented the DevOps instances with Microsoft Azure.
 
-6. API Correctness Enhancements
+2. API Correctness Enhancements
 
    For this project I was tasked with improving the robustness of the client's software. In particular, the client has applications that communicated through various untyped APIs. This software was fragile in the sense that changes to an API in one place necessitated corresponding changes in another, yet there was nothing to verify the second updates had been made. This led to numerous bug reports and production issues.
 
@@ -50,7 +67,7 @@ For **Platonic.Systems** I have worked with multiple clients. Below are short de
 
    This project required considerable research on our part due to how niche haskell's web integration is. Despite those risks, we were able to satisfy the client's requests, and their systems are more robust as a result.
 
-7. Supply-chain analysis
+1. Supply-chain analysis
 
    For this client I worked on a full-stack Haskell web-application designed for monitoring and analyzing supply-chain risks. I implemented new features, fixed bugs, and improved performance in numerous areas.
 
@@ -116,33 +133,6 @@ Additionally, I participate in online discussions, such as the [ghc-proposals pr
 ### Nix
 
 I have contributed several packages and bugfixes to [`nixpkgs`](https://github.com/NixOS/nixpkgs), a package manager for the `NixOS` linux operating system.
-
-## Skills
-
-I have experience both as a team member and leader. In addition to team experience, I have been a solo developer, where I work directly with the client to satisfy their needs. Below is a list of some of the technologies I have worked with in a professional capacity.
-
-- Programming languages
-  - Haskell
-  - Java
-  - Java/Typescript
-  - C++
-  - Ruby
-- Databases
-  - Postgres
-  - Oracle
-  - SQLite
-- DevOps
-  - Nix
-  - Docker
-  - OpenShift
-- CI/CD
-  - Github Actions
-  - Gitlab
-  - Jenkins
-- Operating Systems
-  - Linux
-  - OSX
-  - Windows
 
 ## Contact
 
