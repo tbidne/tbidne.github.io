@@ -4,6 +4,8 @@ toc: true
 order: 4
 ---
 
+_Please see <a href="{{ '/assets/tbidne_resume.pdf' | relative_url }}" target="_blank">the PDF</a> for a condensed version._
+
 ## Introduction
 
 My name is Thomas Bidne, and I am a software engineer with 10 years of professional experience. I have been writing code since I was 14, for both academic and personal reasons.
@@ -51,25 +53,25 @@ See my [Professional Experience](#professional_experience) for more details.
 
 For **Platonic.Systems** I have worked with multiple clients. Below are short descriptions of the work I have done for each, in reverse chronological order.
 
-4. Smart contracts
+- Smart contracts
 
-   My most recent work has been in the "smart-contract" space i.e. implementing financial systems that come with rigorous guarantees. This includes, for instance, maintaining system invariants e.g. that transactions are "atomic" i.e. either fully-complete or encounter some error. This work has primarily used Haskell and Nix, both with large, open-source projects (i.e. [cardano](<https://en.wikipedia.org/wiki/Cardano_(blockchain_platform)>)) and custom, private ones.
+  My most recent work has been in the "smart-contract" space i.e. implementing financial systems that come with rigorous guarantees. This includes, for instance, maintaining system invariants e.g. that transactions are "atomic" i.e. either fully-complete or encounter some error. This work has primarily used Haskell and Nix, both with large, open-source projects (i.e. [cardano](<https://en.wikipedia.org/wiki/Cardano_(blockchain_platform)>)) and custom, private ones.
 
-3. Data Visualization And Machine learning
+- Data Visualization And Machine learning
 
-   This client wanted a website that could make market predictions for their product line, based on sales data and machine learning. I designed and implemented the website, using Python and the [dash](https://plotly.com/dash/) data visualization framework, per the client's wishes. I also implemented the DevOps instances with Microsoft Azure.
+  This client wanted a website that could make market predictions for their product line, based on sales data and machine learning. I designed and implemented the website, using Python and the [dash](https://plotly.com/dash/) data visualization framework, per the client's wishes. I also implemented the DevOps instances with Microsoft Azure.
 
-2. API Correctness Enhancements
+- API Correctness Enhancements
 
-   For this project I was tasked with improving the robustness of the client's software. In particular, the client has applications that communicated through various untyped APIs. This software was fragile in the sense that changes to an API in one place necessitated corresponding changes in another, yet there was nothing to verify the second updates had been made. This led to numerous bug reports and production issues.
+  For this project I was tasked with improving the robustness of the client's software. In particular, the client has applications that communicated through various untyped APIs. This software was fragile in the sense that changes to an API in one place necessitated corresponding changes in another, yet there was nothing to verify the second updates had been made. This led to numerous bug reports and production issues.
 
-   I led a small team that addressed this issue. We did this by porting the mutable portion of the APIs into Haskell. Haskell's static type system ensured that any changes made to one end of an API must also be accounted for at the other. We were able to integrate this statically typed Haskell code into the client's javascript codebase via `GhcJS`, a `haskell <-> javascript` compiler.
+  I led a small team that addressed this issue. We did this by porting the mutable portion of the APIs into Haskell. Haskell's static type system ensured that any changes made to one end of an API must also be accounted for at the other. We were able to integrate this statically typed Haskell code into the client's javascript codebase via `GhcJS`, a `haskell <-> javascript` compiler.
 
-   This project required considerable research on our part due to how niche haskell's web integration is. Despite those risks, we were able to satisfy the client's requests, and their systems are more robust as a result.
+  This project required considerable research on our part due to how niche haskell's web integration is. Despite those risks, we were able to satisfy the client's requests, and their systems are more robust as a result.
 
-1. Supply-chain analysis
+- Supply-chain analysis
 
-   For this client I worked on a full-stack Haskell web-application designed for monitoring and analyzing supply-chain risks. I implemented new features, fixed bugs, and improved performance in numerous areas.
+  For this client I worked on a full-stack Haskell web-application designed for monitoring and analyzing supply-chain risks. I implemented new features, fixed bugs, and improved performance in numerous areas.
 
 ### 2016 - 2020: BridgePhase - USCIS, Washington D.C.
 
@@ -104,7 +106,7 @@ Worked on the **Next Generation Threat System (NGTS)** for the U.S. Navy. **NGTS
 
 ## Opensource Experience
 
-{% assign projects_url = "heyyooo" %}
+{% assign projects_url = "" %}
 {% for tab in site.tabs %}
 {% if tab.title == 'Projects' %}
 {% assign projects_url = tab.url %}
@@ -112,7 +114,7 @@ Worked on the **Next Generation Threat System (NGTS)** for the U.S. Navy. **NGTS
 {% endfor %}
 
 My personal projects are on [my github](https://www.github.com/tbidne). These projects range from experiments, libraries for public consumption, and applications that I use every day. For a quick overview, see
-<a href="{{ projects_url | relative_url }}" target="_self">projects</a>.
+<a href="{{ projects_url | relative_url }}" target="_blank">projects</a>.
 
 Futhermore, I have made contributions to the following open-source communities.
 
