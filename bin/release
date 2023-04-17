@@ -9,12 +9,18 @@ if [[ 0 -ne $? ]]; then
   exit 1
 fi
 
+# recreate release on main
+git checkout main
+
+# delete branch release if exists
+git branch | grep ^[[:space:]]*release$
+if [[ 0 -eq $? ]]; then
+  git branch -D release
+fi
+
 # turn errors back on
 set -e
 
-# recreate release on main
-git checkout main
-git branch -D release
 git checkout -b release
 
 # build
