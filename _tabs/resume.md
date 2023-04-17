@@ -4,7 +4,7 @@ toc: true
 order: 4
 ---
 
-_Please see <a href="{{ '/assets/tbidne_resume.pdf' | relative_url }}" target="_blank">the PDF</a> for a condensed version._
+_Please see the <a href="{{ '/assets/tbidne_resume.pdf' | relative_url }}" target="_blank">pdf</a> for a condensed version._
 
 ## Introduction
 
