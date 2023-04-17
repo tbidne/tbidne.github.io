@@ -114,9 +114,13 @@ projects:
 # The following items will not be processed, by default. Create a custom list
 # to override the default setting.
 exclude:
+  - flake.lock
+  - flake.nix
   - Gemfile
   - Gemfile.lock
+  - Makefile
   - node_modules
+  - notes.txt
   - vendor/bundle/
   - vendor/cache/
   - vendor/gems/

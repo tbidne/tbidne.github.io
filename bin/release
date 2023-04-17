@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# want a better error message if following git check fails
+set +e
+
+git diff-index --quiet HEAD --
+if [[ 0 -ne $? ]]; then
+  echo "error: git directory is dirty!"
+  exit 1
+fi
+
+# turn errors back on
+set -e
+
+# recreate release on main
+git checkout main
+git branch -D release
+git checkout -b release
+
+# build
+jekyll build
+
+# rename for github-pages
+mv _site docs
+
+# commit and push
+git add docs
+git commit -m "Build site"
+git push -u -f origin release
+
+# return to main
+git checkout main
