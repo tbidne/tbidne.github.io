@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set +e
+
 timeout -- 5 bundle exec jekyll serve -H 0.0.0.0 -P 4000
 ec=$?
 

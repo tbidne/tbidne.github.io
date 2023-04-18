@@ -16,14 +16,7 @@
     "prebuild": "npx rimraf assets/js/dist",
     "build": "NODE_ENV=production npx rollup -c --bundleConfigAsCjs",
     "prewatch": "npx rimraf assets/js/dist",
-    "watch": "npx rollup -c --bundleConfigAsCjs -w",
-    "fmtc": "npx prettier --check .",
-    "fmt": "npx prettier -w .",
-    "lintc_css": "npx stylelint _sass/**/*.scss",
-    "lint_css": "npx stylelint _sass/**/*.scss --fix",
-    "clean": "bin/clean",
-    "test": "bin/serve_test",
-    "serve": "bundle exec jekyll serve -H 0.0.0.0 -P 4000"
+    "watch": "npx rollup -c --bundleConfigAsCjs -w"
   },
   "devDependencies": {
     "@babel/core": "^7.21.3",
