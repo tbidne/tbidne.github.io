@@ -6,8 +6,7 @@
 [![MIT](https://img.shields.io/github/license/tbidne/tbidne.github.io?color=blue&labelColor=2f353e)](https://opensource.org/licenses/MIT)
 
 [![pages-build-deployment](https://github.com/tbidne/tbidne.github.io/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/tbidne/tbidne.github.io/actions/workflows/pages/pages-build-deployment)
-[![build](https://github.com/tbidne/tbidne.github.io/actions/workflows/build.yaml/badge.svg)](https://github.com/tbidne/tbidne.github.io/actions/workflows/build.yaml)
-[![style](https://github.com/tbidne/tbidne.github.io/actions/workflows/style.yaml/badge.svg)](https://github.com/tbidne/tbidne.github.io/actions/workflows/style.yaml)
+[![ci](https://github.com/tbidne/tbidne.github.io/actions/workflows/ci.yaml/badge.svg)](https://github.com/tbidne/tbidne.github.io/actions/workflows/ci.yaml)
 
 </div>
 
