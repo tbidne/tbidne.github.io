@@ -13,7 +13,7 @@ on:
 
 jobs:
   build:
-    runs-on: "ubuntu-latest"
+    runs-on: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v3
 
@@ -30,7 +30,7 @@ jobs:
       - name: Test server
         run: nix develop -c bash -c "./tools/servec.sh"
   lint:
-    runs-on: "ubuntu-latest"
+    runs-on: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v3
 
