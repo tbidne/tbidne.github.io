@@ -83,8 +83,8 @@ projects:
       gh-repo: navi
       desc: A tool for easily creating desktop notifications for arbitrary actions.
 
-    - title: Safe rm
-      gh-repo: safe-rm
+    - title: Charon
+      gh-repo: charon
       desc: A safer alternative to the venerable unix tool 'rm'.
 
     - title: Time Conv
