@@ -47,7 +47,7 @@ See my [Professional Experience](#professional_experience) for more details.
 
 ## Professional Experience
 
-### 2024 - Present: Independent Contractor
+### 2023 - Present: Independent Contractor
 
 - Improved outstanding issues in poorly understood Haskell voice analytics software:
   - Added documentation, extensive test suites, and Github CI/CD.
@@ -55,7 +55,7 @@ See my [Professional Experience](#professional_experience) for more details.
   - Designed, implemented, and demo-ed new features.
   - Fixed long-standing bugs.
 
-### 2020 - 2024: Platonic.Systems
+### 2020 - 2023: Platonic.Systems
 
 **Senior Software Engineer**
 
