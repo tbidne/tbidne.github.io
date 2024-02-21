@@ -47,7 +47,15 @@ See my [Professional Experience](#professional_experience) for more details.
 
 ## Professional Experience
 
-### 2020 - Present: Platonic.Systems
+### 2024 - Present: Independent Contractor
+
+- Improved outstanding issues in poorly understood Haskell voice analytics software:
+  - Added documentation, extensive test suites, and Github CI/CD.
+  - Refactored code to remove difficult dependencies.
+  - Designed, implemented, and demo-ed new features.
+  - Fixed long-standing bugs.
+
+### 2020 - 2024: Platonic.Systems
 
 **Senior Software Engineer**
 
@@ -55,7 +63,7 @@ For **Platonic.Systems** I have worked with multiple clients. Below are short de
 
 - Smart contracts
 
-  My most recent work has been in the "smart-contract" space i.e. implementing financial systems that come with rigorous guarantees. This includes, for instance, maintaining system invariants e.g. that transactions are "atomic" i.e. either fully-complete or encounter some error. This work has primarily used Haskell and Nix, both with large, open-source projects (i.e. [cardano](<https://en.wikipedia.org/wiki/Cardano_(blockchain_platform)>)) and custom, private ones.
+  Implemented financial systems that come with rigorous guarantees. This includes, for instance, maintaining system invariants e.g. that transactions are "atomic" i.e. either fully-complete or encounter some error. This work has primarily used Haskell and Nix, both with large, open-source projects (i.e. [cardano](<https://en.wikipedia.org/wiki/Cardano_(blockchain_platform)>)) and custom, private ones.
 
 - Data Visualization And Machine learning
 
@@ -63,7 +71,7 @@ For **Platonic.Systems** I have worked with multiple clients. Below are short de
 
 - API Correctness Enhancements
 
-  For this project I was tasked with improving the robustness of the client's software. In particular, the client has applications that communicated through various untyped APIs. This software was fragile in the sense that changes to an API in one place necessitated corresponding changes in another, yet there was nothing to verify the second updates had been made. This led to numerous bug reports and production issues.
+  For this project I was tasked with improving the robustness of the client's software. In particular, the client had applications that communicated through various untyped APIs. This software was fragile in the sense that changes to an API in one place necessitated corresponding changes in another, yet there was nothing to verify the second updates had been made. This led to numerous bug reports and production issues.
 
   I led a small team that addressed this issue. We did this by porting the mutable portion of the APIs into Haskell. Haskell's static type system ensured that any changes made to one end of an API must also be accounted for at the other. We were able to integrate this statically typed Haskell code into the client's javascript codebase via `GhcJS`, a `haskell <-> javascript` compiler.
 
