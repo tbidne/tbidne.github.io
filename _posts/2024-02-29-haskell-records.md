@@ -195,6 +195,8 @@ msg c = c.employee.name ++ " works at " ++ c.name
 
 Much nicer! Not only is this more concise and familiar, it allows both definition and usage of duplicate record fields, completely solving problem 1.
 
+<!-- prettier-ignore-start -->
+
 > Note that the record field needs to be in scope in order to use it. For example:
 >
 > ```haskell
@@ -207,6 +209,8 @@ Much nicer! Not only is this more concise and familiar, it allows both definitio
 >
 > ```
 {: .prompt-tip }
+
+<!-- prettier-ignore-end -->
 
 ### Tell me the catch
 
@@ -413,7 +417,5 @@ If, on the other hand, you want the most complete, sophisticated way of handling
 ---
 
 [^fn1]: There is an extension `-XDuplicateRecordFields` that overcomes this limitation. This only allows the _definition_ -- not actual **usage** -- so it is not a complete solution.
-
 [^fn2]: I wrote about this problem as a motivator for optics [here](https://tbidne.github.io/posts/optics/).
-
 [^fn3]: Not only can optics handle fields via lenses, but we can also manipulate sum types via _prisms_. A full description is beyond the scope of this article, however.
