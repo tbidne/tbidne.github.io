@@ -7,26 +7,31 @@ set -e
 clean=0
 static=0
 while [ $# -gt 0 ]; do
-  if [[ $1 == "--help" || $1 == "-h" ]]; then
-    echo -e "build: Builds the website.\n"
-    echo "Usage: build [-c|--clean]"
-    echo "             [-s|--static]"
-    echo "             [-h|--help]"
-    echo ""
-    echo "Available options:"
-    echo -e "  -c,--clean  \tIf enabled, runs ./bin/clean --all. Implies --static."
-    echo -e "              \tRequired libs will be reinstalled.\n"
-    echo -e "  -s,--static  \tBuilds static assets.\n"
-    exit 0
-  elif [[ $1 == "--clean" || $1 == "-c" ]]; then
-    clean=1
-    static=1
-  elif [[ $1 == "--static" || $1 == "-s" ]]; then
-    static=1
-  else
-    echo "Unexpected arg: '$1'. Try --help."
-    exit 1
-  fi
+  case "$1" in
+    "-h" | "--help")
+      echo -e "build: Builds the website.\n"
+      echo "Usage: build [-c|--clean]"
+      echo "             [-s|--static]"
+      echo "             [-h|--help]"
+      echo ""
+      echo "Available options:"
+      echo -e "  -c,--clean  \tIf enabled, runs ./bin/clean --all. Implies --static."
+      echo -e "              \tRequired libs will be reinstalled.\n"
+      echo -e "  -s,--static \tBuilds static assets.\n"
+      exit 0
+      ;;
+    "-c" | "--clean")
+      clean=1
+      static=1
+      ;;
+    "-s" | "--static")
+      static=1
+      ;;
+    *)
+      echo "Unexpected arg: '$1'. Try --help."
+      exit 1
+      ;;
+  esac
   shift
 done
 
