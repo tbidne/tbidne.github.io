@@ -6,7 +6,7 @@ tags: [functional programming, haskell, programming]
 pin: false
 hidden: false
 render_with_liquid: false
-last_modified_at: 2024-02-29 20:00:00 +1300
+last_modified_at: 2024-03-01 10:40:00 +1300
 ---
 
 ## Introduction
@@ -155,7 +155,7 @@ setName :: Employee -> String -> Employee
 setName e newName = e { name = newName }
 ```
 
-The `setName` function takes an employee `e`, new name `n`, and returns a new employee that is the same as `e` except its name is `n`. This is useful as it means we do not have to manually copy over unchanged fields when we want to change just one.
+The `setName` function takes an employee `e`, new name `newName`, and returns a new employee `e'` that is the same as `e` except its name is `newName`. This is useful as it means we do not have to manually copy over unchanged fields when we want to change just one.
 
 There is a limitation, however: nested updates do not compose. That is, there is nothing like the following pseudo-syntax:
 
@@ -214,7 +214,7 @@ Much nicer! Not only is this more concise and familiar, it allows both definitio
 
 ### Don't get too excited just yet
 
-While this neatly solves the problem of duplicate names, this does not help with nested updates. In fact, `-XOverloadedRecordDot` does not work for updates at all. For that, we need another extension, `-XOverloadedRecordUpdate`:
+While this neatly solves the problem of duplicate names, this does not help with nested updates. In fact, `-XOverloadedRecordDot` does not work for updates at all. For that, we need another extension, `-XOverloadedRecordUpdate`, plus some boilerplate. Brace yourself:
 
 ```haskell
 {-# LANGUAGE AllowAmbiguousTypes #-}
@@ -225,7 +225,7 @@ While this neatly solves the problem of duplicate names, this does not help with
 {-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE OverloadedRecordUpdate #-}
 {-# LANGUAGE PolyKinds #-}
-{-# LANGUAGE RebindableSyntax #-} -- also required :-(
+{-# LANGUAGE RebindableSyntax #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeSynonymInstances #-}
@@ -234,7 +234,8 @@ module Data where
 
 import Prelude
 
--- Declare HasField class, getField, and setField
+-- Because of RebindableSyntax, we need to declare the HasField class,
+-- getField, and setField ourselves.
 
 class HasField x r a | x r -> a where
   hasField :: r -> (a -> r, a)
@@ -274,7 +275,7 @@ Yikes! As you can see, this is a far-cry from the simplicity of `-XOverloadedRec
 
 Even the [docs](https://downloads.haskell.org/ghc/9.8.2/docs/users_guide/exts/overloaded_record_update.html) explicitly warn against using it.
 
-There is good news, however. A proposal to improve the situation was accepted in [October 2023](https://github.com/ghc-proposals/ghc-proposals/pull/583), and updates should work after this is implemented. This will not cover _all_ use cases: type-changing updates will not immediately be supported. But this will easily cover 95% of typical record usage.
+There is good news, however. A proposal to improve the situation was accepted in [October 2023](https://github.com/ghc-proposals/ghc-proposals/pull/583), and updates should work after this is implemented. This will not cover _all_ use cases: type-changing updates will not immediately be supported. But this will easily cover typical record usage.
 
 ## Solution 2: Optics
 
@@ -357,7 +358,7 @@ msg c = view (#employee % #name) c ++ " works at " ++ view #name c
 makeFieldLabelsNoPrefix ''Company
 ```
 
-This can lead to frustratingly cryptic "No instance for LabelOptic..." errors when there are multiple TH definitions and usages in the same module ("What do you mean no instance? _It's right there_.").
+This can lead to cryptic "No instance for LabelOptic..." errors when there are multiple TH definitions and usages in the same module ("What do you mean no instance? _It's right there_.").
 
 TH also comes with other drawbacks:
 
@@ -370,32 +371,34 @@ Thus we can drop the dependency on `optics-th` and hand-write our lenses instead
 import Optics.Core (A_Lens, lensVL, set, view, (%))
 import Optics.Label (LabelOptic(labelOptic))
 
+-- makeFieldLabelsNoPrefix generates the below instances for each field.
+
 -- name lens for employee
 instance LabelOptic "name" A_Lens Employee Employee String String where
-  labelOptic = lensVL nameLensVL
+  labelOptic = lensVL nameLens
     where
-      nameLensVL :: Functor f => (String -> f String) -> Employee -> f Employee
-      nameLensVL f (MkEmployee _name _title _age) =
+      nameLens :: Functor f => (String -> f String) -> Employee -> f Employee
+      nameLens f (MkEmployee _name _title _age) =
         fmap (\name' -> MkEmployee name' _title _age) (f _name)
 
 -- name lens for company
 instance LabelOptic "name" A_Lens Company Company String String where
-  labelOptic = lensVL nameLensVL
+  labelOptic = lensVL nameLens
     where
-      nameLensVL :: Functor f => (String -> f String) -> Company -> f Company
-      nameLensVL f (MkCompany _name _employee) =
+      nameLens :: Functor f => (String -> f String) -> Company -> f Company
+      nameLens f (MkCompany _name _employee) =
         fmap (\name' -> MkCompany name' _employee) (f _name)
 
 -- employee lens for company
 instance LabelOptic "employee" A_Lens Company Company Employee Employee where
-  labelOptic = lensVL employeeLensVL
+  labelOptic = lensVL employeeLens
     where
-      employeeLensVL :: Functor f => (Employee -> f Employee) -> Company -> f Company
-      employeeLensVL f (MkCompany _name _employee) =
+      employeeLens :: Functor f => (Employee -> f Employee) -> Company -> f Company
+      employeeLens f (MkCompany _name _employee) =
         fmap (\employee' -> MkCompany _name employee') (f _employee)
 ```
 
-That's it! A bit heavy on the boilerplate, but this solves both duplicate fields **and** nested updates. Additionally, we receive nice features beyond normal getters and setters like _modify_.
+That's it! A bit heavy on the boilerplate, but this solves both duplicate fields **and** nested updates without any TH drawbacks. Additionally, we receive nice features beyond normal getters and setters like _modify_.
 
 ```haskell
 import Optics.Core (over)
@@ -416,7 +419,7 @@ It depends.
 
 `-XOverloadedRecordDot` is undoubtedly simpler and friendlier to people coming from other languages. If the primary problem you face is duplicate record fields and you don't need nested updates all that often, perhaps `-XOverloadedRecordDot` is the best choice (and nested updates are hopefully not too far away).
 
-If, on the other hand, you want the most complete, sophisticated way of handling records today, take the plunge, and explore how deep the optics rabbit-hole goes.
+If, on the other hand, you want the most complete, sophisticated way of handling data today, take the plunge, and explore how deep the optics rabbit-hole goes.
 
 ---
 
