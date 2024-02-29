@@ -1,12 +1,12 @@
 ---
-title: Haskell Records
+title: Haskell records
 date: 2024-02-29 09:00:00 +1300
 categories: [Programming]
 tags: [functional programming, haskell, programming]
 pin: false
 hidden: false
 render_with_liquid: false
-last_modified_at: 2024-02-29 09:00:00 +1300
+last_modified_at: 2024-02-29 20:00:00 +1300
 ---
 
 ## Introduction
@@ -212,7 +212,7 @@ Much nicer! Not only is this more concise and familiar, it allows both definitio
 
 <!-- prettier-ignore-end -->
 
-### Tell me the catch
+### Don't get too excited just yet
 
 While this neatly solves the problem of duplicate names, this does not help with nested updates. In fact, `-XOverloadedRecordDot` does not work for updates at all. For that, we need another extension, `-XOverloadedRecordUpdate`:
 
@@ -319,6 +319,8 @@ setEmployeeName c newEmpName = set (#employee % #name) newEmpName c
 
 First, we use `makeFieldLabelsNoPrefix` from the `optics-th` library to generate lenses (a type of optic). After this, we can implement our getter and setter functions simply using the `#<field-name>` syntax. To compose two lenses together, we use the `(%)` operator from `optics-core`. For instance, the equivalent of `myCompany.employee.name` is `view (#employee % #name) myCompany`.
 
+### Tell me the catch
+
 TemplateHaskell (used in `makeFieldLabelsNoPrefix`) has several drawbacks. One of the major annoyances is how it requires the source code to be in a specific order. That is, normally you can reorder code in a Haskell module to your heart's content:
 
 ```haskell
@@ -347,7 +349,7 @@ makeFieldLabelsNoPrefix ''Company
 msg :: Company -> String
 msg c = view (#employee % #name) c ++ " works at " ++ view #name c
 
--- The below does not work!
+-- The below will trigger a "No instance for LabelOptic..." error
 
 msg :: Company -> String
 msg c = view (#employee % #name) c ++ " works at " ++ view #name c
@@ -355,7 +357,9 @@ msg c = view (#employee % #name) c ++ " works at " ++ view #name c
 makeFieldLabelsNoPrefix ''Company
 ```
 
-This can be pretty frustrating. TH also comes with other drawbacks:
+This can lead to frustratingly cryptic "No instance for LabelOptic..." errors when there are multiple TH definitions and usages in the same module ("What do you mean no instance? _It's right there_.").
+
+TH also comes with other drawbacks:
 
 - Increases compilation time.
 - Prevents cross-compilation.
