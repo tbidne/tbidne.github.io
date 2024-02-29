@@ -372,9 +372,16 @@ import Optics.Core (A_Lens, lensVL, set, view, (%))
 import Optics.Label (LabelOptic(labelOptic))
 
 -- makeFieldLabelsNoPrefix generates the below instances for each field.
+--
+-- The reason for the convoluted equality constraints (e.g. k ~ A_Lens, ...)
+-- over writing them directly (instance LabelOptic "name" A_Lens ...) is
+-- improved type inference.
 
 -- name lens for employee
-instance LabelOptic "name" A_Lens Employee Employee String String where
+instance
+  (k ~ A_Lens, a ~ String, b ~ String) =>
+  LabelOptic "name" k Employee Employee a b
+  where
   labelOptic = lensVL nameLens
     where
       nameLens :: Functor f => (String -> f String) -> Employee -> f Employee
@@ -382,7 +389,10 @@ instance LabelOptic "name" A_Lens Employee Employee String String where
         fmap (\name' -> MkEmployee name' _title _age) (f _name)
 
 -- name lens for company
-instance LabelOptic "name" A_Lens Company Company String String where
+instance
+  (k ~ A_Lens, a ~ String, b ~ String) =>
+  LabelOptic "name" k Company Company a b
+  where
   labelOptic = lensVL nameLens
     where
       nameLens :: Functor f => (String -> f String) -> Company -> f Company
@@ -390,7 +400,10 @@ instance LabelOptic "name" A_Lens Company Company String String where
         fmap (\name' -> MkCompany name' _employee) (f _name)
 
 -- employee lens for company
-instance LabelOptic "employee" A_Lens Company Company Employee Employee where
+instance
+  (k ~ A_Lens, a ~ Employee, b ~ Employee) =>
+  LabelOptic "employee" k Company Company a b
+  where
   labelOptic = lensVL employeeLens
     where
       employeeLens :: Functor f => (Employee -> f Employee) -> Company -> f Company
