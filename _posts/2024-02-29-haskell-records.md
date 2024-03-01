@@ -376,6 +376,8 @@ import Optics.Label (LabelOptic(labelOptic))
 -- The reason for the convoluted equality constraints (e.g. k ~ A_Lens, ...)
 -- over writing them directly (instance LabelOptic "name" A_Lens ...) is
 -- improved type inference.
+--
+-- The INLINEs are for performance.
 
 -- name lens for employee
 instance
@@ -387,6 +389,7 @@ instance
       nameLens :: Functor f => (String -> f String) -> Employee -> f Employee
       nameLens f (MkEmployee _name _title _age) =
         fmap (\name' -> MkEmployee name' _title _age) (f _name)
+  {-# INLINE labelOptic #-}
 
 -- name lens for company
 instance
@@ -398,6 +401,7 @@ instance
       nameLens :: Functor f => (String -> f String) -> Company -> f Company
       nameLens f (MkCompany _name _employee) =
         fmap (\name' -> MkCompany name' _employee) (f _name)
+  {-# INLINE labelOptic #-}
 
 -- employee lens for company
 instance
@@ -409,6 +413,7 @@ instance
       employeeLens :: Functor f => (Employee -> f Employee) -> Company -> f Company
       employeeLens f (MkCompany _name _employee) =
         fmap (\employee' -> MkCompany _name employee') (f _employee)
+  {-# INLINE labelOptic #-}
 ```
 
 That's it! A bit heavy on the boilerplate, but this solves both duplicate fields **and** nested updates without any TH drawbacks. Additionally, we receive nice features beyond normal getters and setters like _modify_.
