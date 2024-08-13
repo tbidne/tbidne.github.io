@@ -55,6 +55,12 @@ If, however, any changes are made to `_javascript/*` then the static assets will
 
 Developer tools/scripts can be found in the [tools](/tools) directory.
 
+## Updating dependencies
+
+Updating nix inputs is straightforward (`nix flake update`), but how do we upgrade ruby dependencies? The `bundle outdated` command can help, though we are handicapped to a degree. We want to keep `jekyll` and its transitive dependencies synced with github-pages, so at least those should match here: https://rubygems.org/gems/github-pages.
+
+For other dependencies, upgrade the versions in `Gemfile` per `bundle outdated`, verifying that `./tools/build.sh --clean && ./tools/serve.sh` works. Regenerate the lock file by deleting it and running `bundle lock`.
+
 # Release
 
 The [release.sh](/tools/release.sh) script will:
