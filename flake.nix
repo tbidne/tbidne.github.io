@@ -5,12 +5,14 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   };
   outputs =
-    inputs@{ flake-parts
-    , nixpkgs
-    , self
+    inputs@{
+      flake-parts,
+      nixpkgs,
+      self,
     }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      perSystem = { pkgs, ... }:
+      perSystem =
+        { pkgs, ... }:
         let
           buildTools = [
             pkgs.nodejs
@@ -19,9 +21,7 @@
           ];
         in
         {
-          devShells.default = pkgs.mkShell {
-            buildInputs = buildTools;
-          };
+          devShells.default = pkgs.mkShell { buildInputs = buildTools; };
         };
       systems = [
         "x86_64-darwin"
