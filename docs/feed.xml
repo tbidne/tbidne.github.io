@@ -1,0 +1,1262 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" hreflang="en" /><updated>2024-08-14T10:55:14+12:00</updated><id>/feed.xml</id><title type="html">Thomas Bidne</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Haskell records</title><link href="/posts/haskell-records/" rel="alternate" type="text/html" title="Haskell records" /><published>2024-02-29T09:00:00+13:00</published><updated>2024-03-01T10:40:00+13:00</updated><id>/posts/haskell-records</id><content type="html" xml:base="/posts/haskell-records/"><![CDATA[<h2 id="introduction">Introduction</h2>
+
+<p>Haskell records appear simple, but this simplicity belies some significant drawbacks. While there are a plethora of libraries and language extensions that improve ergonomics, the trade-offs are not immediately obvious.</p>
+
+<p>This post describes two of the most popular approaches, with an eye towards future improvements.</p>
+
+<h2 id="records-a-background">Records, a background</h2>
+
+<p>By records, we mean product types that have named fields. For example:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre></td><td class="rouge-code"><pre><span class="kd">class</span> <span class="nc">Employee</span> <span class="o">{</span>
+  <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+  <span class="nc">String</span> <span class="n">title</span><span class="o">;</span>
+  <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+
+  <span class="kd">class</span> <span class="nf">Employee</span><span class="o">(</span><span class="nc">String</span> <span class="n">n</span><span class="o">,</span> <span class="nc">String</span> <span class="n">t</span><span class="o">,</span> <span class="nc">Int</span> <span class="n">a</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">n</span><span class="o">;</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">title</span> <span class="o">=</span> <span class="n">t</span><span class="o">;</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">a</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">static</span> <span class="nc">String</span> <span class="nf">greetEmployee</span><span class="o">(</span><span class="nc">Employee</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="s">"Hello "</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="na">name</span> <span class="o">+</span> <span class="s">"!"</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>We have a type representing an employee that includes fields for a name, title, and age. Not only do we have the fields themselves, we associate a <em>name</em> with them. To see why this matters, consider the following haskell code:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="kr">data</span> <span class="kt">Employee</span> <span class="o">=</span> <span class="kt">MkEmployee</span> <span class="kt">String</span> <span class="kt">String</span> <span class="kt">Int</span>
+
+<span class="n">mkEmployee</span> <span class="o">::</span> <span class="kt">String</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="o">-&gt;</span> <span class="kt">Employee</span>
+<span class="n">mkEmployee</span> <span class="n">name</span> <span class="n">title</span> <span class="n">age</span> <span class="o">=</span> <span class="kt">MkEmployee</span> <span class="n">name</span> <span class="n">title</span> <span class="n">age</span>
+
+<span class="n">greetEmployee</span> <span class="o">::</span> <span class="kt">Employee</span> <span class="o">-&gt;</span> <span class="kt">String</span>
+<span class="n">greetEmployee</span> <span class="p">(</span><span class="kt">MkEmployee</span> <span class="n">n</span> <span class="kr">_</span> <span class="kr">_</span><span class="p">)</span> <span class="o">=</span> <span class="s">"Hello "</span> <span class="o">++</span> <span class="n">n</span> <span class="o">++</span> <span class="s">"!"</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Like the java example, this declares an <code class="language-plaintext highlighter-rouge">Employee</code> type that takes two strings and an int. Unlike the java example, however, the fields are unnamed. To access them we have to use pattern-matching. The downside is that we have to remember which field is which. This is especially problematic when we have multiple fields with the same type. For instance, the following code typechecks, yet is clearly a mistake, as we use the field intended for the <code class="language-plaintext highlighter-rouge">title</code>, not the <code class="language-plaintext highlighter-rouge">name</code>:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="n">greetEmployee</span> <span class="o">::</span> <span class="kt">Employee</span> <span class="o">-&gt;</span> <span class="kt">String</span>
+<span class="n">greetEmployee</span> <span class="p">(</span><span class="kt">MkEmployee</span> <span class="kr">_</span> <span class="n">t</span> <span class="kr">_</span><span class="p">)</span> <span class="o">=</span> <span class="s">"Hello "</span> <span class="o">++</span> <span class="n">t</span> <span class="o">++</span> <span class="s">"!"</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Not only is it easy to make mistakes, it also means we need to modify <code class="language-plaintext highlighter-rouge">greetEmployee</code> any time we add or remove a field from <code class="language-plaintext highlighter-rouge">Employee</code>.</p>
+
+<p>Fortunately, haskell provides “record syntax” that allows us to name fields:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre></td><td class="rouge-code"><pre><span class="kr">data</span> <span class="kt">Employee</span> <span class="o">=</span> <span class="kt">MkEmployee</span>
+  <span class="p">{</span> <span class="n">name</span> <span class="o">::</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="n">title</span> <span class="o">::</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="n">age</span> <span class="o">::</span> <span class="kt">Int</span>
+  <span class="p">}</span>
+
+<span class="n">mkEmployee</span> <span class="o">::</span> <span class="kt">String</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="o">-&gt;</span> <span class="kt">Employee</span>
+<span class="n">mkEmployee</span> <span class="n">n</span> <span class="n">t</span> <span class="n">a</span> <span class="o">=</span>
+  <span class="kt">MkEmployee</span>
+    <span class="p">{</span> <span class="n">name</span> <span class="o">=</span> <span class="n">n</span><span class="p">,</span>
+      <span class="n">title</span> <span class="o">=</span> <span class="n">t</span><span class="p">,</span>
+      <span class="n">age</span> <span class="o">=</span> <span class="n">a</span>
+    <span class="p">}</span>
+
+<span class="n">greetEmployee</span> <span class="o">::</span> <span class="kt">Employee</span> <span class="o">-&gt;</span> <span class="kt">String</span>
+<span class="n">greetEmployee</span> <span class="n">e</span> <span class="o">=</span> <span class="s">"Hello "</span> <span class="o">++</span> <span class="n">name</span> <span class="n">e</span> <span class="o">++</span> <span class="s">"!"</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Much better! Pattern matching still works, but we can now use the names to write clearer code that is less vulnerable to updates. All is well, right?</p>
+
+<h2 id="all-is-not-well">All is not well</h2>
+
+<h3 id="problem-1-duplicate-field-names">Problem 1: Duplicate Field Names</h3>
+
+<p>Suppose we want to create two types with the same field name:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td class="rouge-code"><pre><span class="kr">data</span> <span class="kt">Employee</span> <span class="o">=</span> <span class="kt">MkEmployee</span>
+  <span class="p">{</span> <span class="n">name</span> <span class="o">::</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="n">title</span> <span class="o">::</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="n">age</span> <span class="o">::</span> <span class="kt">Int</span>
+  <span class="p">}</span>
+
+<span class="kr">data</span> <span class="kt">Company</span> <span class="o">=</span> <span class="kt">MkCompany</span>
+  <span class="p">{</span> <span class="n">name</span> <span class="o">::</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="n">employee</span> <span class="o">::</span> <span class="kt">Employee</span> <span class="c1">-- it's a small company, okay?</span>
+  <span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Unfortunately, these will not compile in the same module! The problem is that haskell’s record syntax essentially generates “field selectors” for each field i.e. for <code class="language-plaintext highlighter-rouge">Employee</code>:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="rouge-code"><pre><span class="n">name</span> <span class="o">::</span> <span class="kt">Employee</span> <span class="o">-&gt;</span> <span class="kt">String</span>
+<span class="n">name</span> <span class="p">(</span><span class="kt">MkEmployee</span> <span class="n">n</span> <span class="kr">_</span> <span class="kr">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">n</span>
+
+<span class="n">title</span> <span class="o">::</span> <span class="kt">Employee</span> <span class="o">-&gt;</span> <span class="kt">String</span>
+<span class="n">title</span> <span class="p">(</span><span class="kt">MkEmployee</span> <span class="kr">_</span> <span class="n">t</span> <span class="kr">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">n</span>
+
+<span class="n">age</span> <span class="o">::</span> <span class="kt">Employee</span> <span class="o">-&gt;</span> <span class="kt">Int</span>
+<span class="n">age</span> <span class="p">(</span><span class="kt">MkEmployee</span> <span class="kr">_</span> <span class="kr">_</span> <span class="n">a</span><span class="p">)</span> <span class="o">=</span> <span class="n">a</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>So if we try to compile <code class="language-plaintext highlighter-rouge">Employee</code> and <code class="language-plaintext highlighter-rouge">Company</code> we’d have:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="n">name</span> <span class="o">::</span> <span class="kt">Employee</span> <span class="o">-&gt;</span> <span class="kt">String</span>
+<span class="n">name</span> <span class="p">(</span><span class="kt">MkEmployee</span> <span class="n">n</span> <span class="kr">_</span> <span class="kr">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">n</span>
+
+<span class="n">name</span> <span class="o">::</span> <span class="kt">Company</span> <span class="o">-&gt;</span> <span class="kt">String</span>
+<span class="n">name</span> <span class="p">(</span><span class="kt">MkCompany</span> <span class="n">n</span> <span class="kr">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">n</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>But we cannot have two top-level functions with the same name, hence the error.<sup id="fnref:fn1" role="doc-noteref"><a href="#fn:fn1" class="footnote" rel="footnote">1</a></sup> The work-around is to declare these data types in different modules, and then qualify their usage:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre></td><td class="rouge-code"><pre><span class="c1">-- Employee.hs</span>
+<span class="kr">data</span> <span class="kt">Employee</span> <span class="o">=</span> <span class="o">...</span>
+
+<span class="c1">-- Company.hs</span>
+<span class="kr">data</span> <span class="kt">Company</span> <span class="o">=</span> <span class="o">...</span>
+
+<span class="c1">-- Lib.hs</span>
+<span class="kr">module</span> <span class="nn">Lib</span> <span class="kr">where</span>
+
+<span class="kr">import</span> <span class="nn">Company</span> <span class="p">(</span><span class="kt">Company</span><span class="p">)</span>
+<span class="kr">import</span> <span class="nn">Company</span> <span class="n">qualified</span> <span class="n">as</span> <span class="kt">Company</span>
+<span class="kr">import</span> <span class="nn">Employee</span> <span class="p">(</span><span class="kt">Employee</span><span class="p">)</span>
+<span class="kr">import</span> <span class="nn">Employee</span> <span class="n">qualified</span> <span class="n">as</span> <span class="kt">Employee</span>
+
+<span class="n">msg</span> <span class="o">::</span> <span class="kt">Company</span> <span class="o">-&gt;</span> <span class="kt">String</span>
+<span class="n">msg</span> <span class="n">c</span> <span class="o">=</span> <span class="kt">Employee</span><span class="o">.</span><span class="n">name</span> <span class="p">(</span><span class="kt">Company</span><span class="o">.</span><span class="n">employee</span> <span class="n">c</span><span class="p">)</span> <span class="o">++</span> <span class="s">" works at "</span> <span class="o">++</span> <span class="kt">Company</span><span class="o">.</span><span class="n">name</span> <span class="n">c</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>This works, but isn’t terribly satisfying.</p>
+
+<h3 id="problem-2-nested-updates">Problem 2: Nested Updates</h3>
+
+<p>Haskell’s record syntax offers a further convenience; we can model updates:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="n">setName</span> <span class="o">::</span> <span class="kt">Employee</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="o">-&gt;</span> <span class="kt">Employee</span>
+<span class="n">setName</span> <span class="n">e</span> <span class="n">newName</span> <span class="o">=</span> <span class="n">e</span> <span class="p">{</span> <span class="n">name</span> <span class="o">=</span> <span class="n">newName</span> <span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">setName</code> function takes an employee <code class="language-plaintext highlighter-rouge">e</code>, new name <code class="language-plaintext highlighter-rouge">newName</code>, and returns a new employee <code class="language-plaintext highlighter-rouge">e'</code> that is the same as <code class="language-plaintext highlighter-rouge">e</code> except its name is <code class="language-plaintext highlighter-rouge">newName</code>. This is useful as it means we do not have to manually copy over unchanged fields when we want to change just one.</p>
+
+<p>There is a limitation, however: nested updates do not compose. That is, there is nothing like the following pseudo-syntax:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="n">setEmployeeName</span> <span class="o">::</span> <span class="kt">Company</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="o">-&gt;</span> <span class="kt">Company</span>
+<span class="n">setEmployeeName</span> <span class="n">c</span> <span class="n">newEmpName</span> <span class="o">=</span> <span class="n">c</span> <span class="p">{</span> <span class="n">employee</span> <span class="o">=</span> <span class="n">employee</span> <span class="p">{</span> <span class="n">name</span> <span class="o">=</span> <span class="n">newEmpName</span> <span class="p">}</span> <span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>In other words, while update syntax allows us to update e.g. <code class="language-plaintext highlighter-rouge">company.employee</code> and <code class="language-plaintext highlighter-rouge">employee.name</code>, it does not work to update <code class="language-plaintext highlighter-rouge">company.employee.name</code>. This is unfortunate, as it greatly increases the difficulty of working with immutable data.<sup id="fnref:fn2" role="doc-noteref"><a href="#fn:fn2" class="footnote" rel="footnote">2</a></sup></p>
+
+<h2 id="solution-1-overloadedrecorddot">Solution 1: OverloadedRecordDot</h2>
+
+<p>This is the simplest solution that will be the most familiar to users with experience in mainstream languages.</p>
+
+<p>GHC 9.2 introduced the <code class="language-plaintext highlighter-rouge">-XOverloadedRecordDot</code> extension. With it, we can rewrite our modules as follows:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre></td><td class="rouge-code"><pre><span class="cp">{-# LANGUAGE DuplicateRecordFields #-}</span> <span class="c1">-- we need this too</span>
+<span class="cp">{-# LANGUAGE OverloadedRecordDot #-}</span>
+
+<span class="kr">module</span> <span class="nn">Data</span> <span class="kr">where</span>
+
+<span class="kr">data</span> <span class="kt">Employee</span> <span class="o">=</span> <span class="kt">MkEmployee</span>
+  <span class="p">{</span> <span class="n">name</span> <span class="o">::</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="n">title</span> <span class="o">::</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="n">age</span> <span class="o">::</span> <span class="kt">Int</span>
+  <span class="p">}</span>
+
+<span class="kr">data</span> <span class="kt">Company</span> <span class="o">=</span> <span class="kt">MkCompany</span>
+  <span class="p">{</span> <span class="n">name</span> <span class="o">::</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="n">employee</span> <span class="o">::</span> <span class="kt">Employee</span>
+  <span class="p">}</span>
+
+<span class="n">msg</span> <span class="o">::</span> <span class="kt">Company</span> <span class="o">-&gt;</span> <span class="kt">String</span>
+<span class="n">msg</span> <span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">employee</span><span class="o">.</span><span class="n">name</span> <span class="o">++</span> <span class="s">" works at "</span> <span class="o">++</span> <span class="n">c</span><span class="o">.</span><span class="n">name</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Much nicer! Not only is this more concise and familiar, it allows both definition and usage of duplicate record fields, completely solving problem 1.</p>
+
+<!-- prettier-ignore-start -->
+
+<blockquote class="prompt-tip">
+  <p>Note that the record field needs to be in scope in order to use it. For example:</p>
+
+  <div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="kr">module</span> <span class="nn">Foo</span> <span class="kr">where</span>
+
+<span class="kr">import</span> <span class="nn">Data</span> <span class="p">(</span><span class="kt">Company</span> <span class="p">(</span><span class="nf">name</span><span class="p">))</span> <span class="c1">-- need to import name here</span>
+
+<span class="n">getCompanyGreeting</span> <span class="o">::</span> <span class="kt">Company</span> <span class="o">-&gt;</span> <span class="kt">String</span>
+<span class="n">getCompanyGreeting</span> <span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="o">++</span> <span class="s">" welcomes you"</span>
+
+</pre></td></tr></tbody></table></code></pre></div>  </div>
+</blockquote>
+
+<!-- prettier-ignore-end -->
+
+<h3 id="dont-get-too-excited-just-yet">Don’t get too excited just yet</h3>
+
+<p>While this neatly solves the problem of duplicate names, this does not help with nested updates. In fact, <code class="language-plaintext highlighter-rouge">-XOverloadedRecordDot</code> does not work for updates at all. For that, we need another extension, <code class="language-plaintext highlighter-rouge">-XOverloadedRecordUpdate</code>, plus some boilerplate. Brace yourself:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+</pre></td><td class="rouge-code"><pre><span class="cp">{-# LANGUAGE AllowAmbiguousTypes #-}</span>
+<span class="cp">{-# LANGUAGE DataKinds #-}</span>
+<span class="cp">{-# LANGUAGE DuplicateRecordFields #-}</span>
+<span class="cp">{-# LANGUAGE FlexibleInstances #-}</span>
+<span class="cp">{-# LANGUAGE FunctionalDependencies #-}</span>
+<span class="cp">{-# LANGUAGE OverloadedRecordDot #-}</span>
+<span class="cp">{-# LANGUAGE OverloadedRecordUpdate #-}</span>
+<span class="cp">{-# LANGUAGE PolyKinds #-}</span>
+<span class="cp">{-# LANGUAGE RebindableSyntax #-}</span>
+<span class="cp">{-# LANGUAGE ScopedTypeVariables #-}</span>
+<span class="cp">{-# LANGUAGE TypeApplications #-}</span>
+<span class="cp">{-# LANGUAGE TypeSynonymInstances #-}</span>
+
+<span class="kr">module</span> <span class="nn">Data</span> <span class="kr">where</span>
+
+<span class="kr">import</span> <span class="nn">Prelude</span>
+
+<span class="c1">-- Because of RebindableSyntax, we need to declare the HasField class,</span>
+<span class="c1">-- getField, and setField ourselves.</span>
+
+<span class="kr">class</span> <span class="kt">HasField</span> <span class="n">x</span> <span class="n">r</span> <span class="n">a</span> <span class="o">|</span> <span class="n">x</span> <span class="n">r</span> <span class="o">-&gt;</span> <span class="n">a</span> <span class="kr">where</span>
+  <span class="n">hasField</span> <span class="o">::</span> <span class="n">r</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="n">r</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+<span class="n">getField</span> <span class="o">::</span> <span class="n">forall</span> <span class="n">x</span> <span class="n">r</span> <span class="n">a</span> <span class="o">.</span> <span class="kt">HasField</span> <span class="n">x</span> <span class="n">r</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="n">r</span> <span class="o">-&gt;</span> <span class="n">a</span>
+<span class="n">getField</span> <span class="o">=</span> <span class="n">snd</span> <span class="o">.</span> <span class="n">hasField</span> <span class="o">@</span><span class="n">x</span>
+
+<span class="n">setField</span> <span class="o">::</span> <span class="n">forall</span> <span class="n">x</span> <span class="n">r</span> <span class="n">a</span> <span class="o">.</span> <span class="kt">HasField</span> <span class="n">x</span> <span class="n">r</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="n">r</span> <span class="o">-&gt;</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="n">r</span>
+<span class="n">setField</span> <span class="o">=</span> <span class="n">fst</span> <span class="o">.</span> <span class="n">hasField</span> <span class="o">@</span><span class="n">x</span>
+
+<span class="kr">data</span> <span class="kt">Employee</span> <span class="o">=</span> <span class="kt">MkEmployee</span>
+  <span class="p">{</span> <span class="n">name</span> <span class="o">::</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="n">title</span> <span class="o">::</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="n">age</span> <span class="o">::</span> <span class="kt">Int</span>
+  <span class="p">}</span>
+
+<span class="c1">-- manually write instances for each field that we want</span>
+
+<span class="kr">instance</span> <span class="kt">HasField</span> <span class="s">"name"</span> <span class="kt">Employee</span> <span class="kt">String</span> <span class="kr">where</span>
+  <span class="n">hasField</span> <span class="n">e</span><span class="o">@</span><span class="p">(</span><span class="kt">MkEmployee</span> <span class="n">name</span> <span class="n">title</span> <span class="n">age</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="nf">\</span><span class="n">n</span> <span class="o">-&gt;</span> <span class="kt">MkEmployee</span> <span class="n">n</span> <span class="n">title</span> <span class="n">age</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+<span class="kr">data</span> <span class="kt">Company</span> <span class="o">=</span> <span class="kt">MkCompany</span>
+  <span class="p">{</span> <span class="n">name</span> <span class="o">::</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="n">employee</span> <span class="o">::</span> <span class="kt">Employee</span>
+  <span class="p">}</span>
+
+<span class="kr">instance</span> <span class="kt">HasField</span> <span class="s">"employee"</span> <span class="kt">Company</span> <span class="kt">Employee</span> <span class="kr">where</span>
+  <span class="n">hasField</span> <span class="n">c</span><span class="o">@</span><span class="p">(</span><span class="kt">MkCompany</span> <span class="n">name</span> <span class="n">employee</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="nf">\</span><span class="n">e</span> <span class="o">-&gt;</span> <span class="kt">MkCompany</span> <span class="n">name</span> <span class="n">e</span><span class="p">,</span> <span class="n">employee</span><span class="p">)</span>
+
+<span class="c1">-- now we can use it</span>
+
+<span class="n">setEmployeeName</span> <span class="o">::</span> <span class="kt">Company</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="o">-&gt;</span> <span class="kt">Company</span>
+<span class="n">setEmployeeName</span> <span class="n">c</span> <span class="n">newEmpName</span> <span class="o">=</span> <span class="n">c</span> <span class="p">{</span> <span class="n">employee</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">newEmpName</span> <span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Yikes! As you can see, this is a far-cry from the simplicity of <code class="language-plaintext highlighter-rouge">-XOverloadedRecordDot</code>. The unfortunate truth is that as of GHC 9.8, <code class="language-plaintext highlighter-rouge">-XOverloadedRecordUpdate</code> is a bit of a hack. It relies on several other extensions – including the huge hammer <code class="language-plaintext highlighter-rouge">-XRebindableSyntax</code> – which can break all sorts of normal code.</p>
+
+<p>Even the <a href="https://downloads.haskell.org/ghc/9.8.2/docs/users_guide/exts/overloaded_record_update.html">docs</a> explicitly warn against using it.</p>
+
+<p>There is good news, however. A proposal to improve the situation was accepted in <a href="https://github.com/ghc-proposals/ghc-proposals/pull/583">October 2023</a>, and updates should work after this is implemented. This will not cover <em>all</em> use cases: type-changing updates will not immediately be supported. But this will easily cover typical record usage.</p>
+
+<h2 id="solution-2-optics">Solution 2: Optics</h2>
+
+<p>Optics provide a second solution. Unlike <code class="language-plaintext highlighter-rouge">-XOverloadedRecordDot</code>, optics are not built-in; they are implemented at the library level. Not only do we therefore have to choose an optics library (there are many), there are often more choices to make. Here we choose <a href="https://hackage.haskell.org/package/optics-core"><code class="language-plaintext highlighter-rouge">optics-core</code></a> (and <a href="https://hackage.haskell.org/package/optics-th"><code class="language-plaintext highlighter-rouge">optics-th</code></a> for generating optics automatically) with <code class="language-plaintext highlighter-rouge">-XOverloadedLabels</code> style:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+</pre></td><td class="rouge-code"><pre><span class="cp">{-# LANGUAGE DataKinds #-}</span>
+<span class="cp">{-# LANGUAGE DuplicateRecordFields #-}</span>
+<span class="cp">{-# LANGUAGE FlexibleInstances #-}</span>
+<span class="cp">{-# LANGUAGE MultiParamTypeClasses #-}</span>
+<span class="cp">{-# LANGUAGE OverloadedLabels #-}</span>
+<span class="cp">{-# LANGUAGE TemplateHaskell #-}</span>
+<span class="cp">{-# LANGUAGE TypeFamilies #-}</span>
+<span class="cp">{-# LANGUAGE UndecidableInstances #-}</span>
+
+<span class="kr">module</span> <span class="nn">Data</span> <span class="kr">where</span>
+
+<span class="kr">import</span> <span class="nn">Optics.Core</span> <span class="p">(</span><span class="nf">set</span><span class="p">,</span> <span class="nf">view</span><span class="p">,</span> <span class="p">(</span><span class="o">%</span><span class="p">))</span>
+<span class="kr">import</span> <span class="nn">Optics.TH</span> <span class="p">(</span><span class="nf">makeFieldLabelsNoPrefix</span><span class="p">)</span> <span class="c1">-- optics-th library</span>
+
+<span class="kr">data</span> <span class="kt">Employee</span> <span class="o">=</span> <span class="kt">MkEmployee</span>
+  <span class="p">{</span> <span class="n">name</span> <span class="o">::</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="n">title</span> <span class="o">::</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="n">age</span> <span class="o">::</span> <span class="kt">Int</span>
+  <span class="p">}</span>
+
+<span class="n">makeFieldLabelsNoPrefix</span> <span class="n">''Employee</span>
+
+<span class="kr">data</span> <span class="kt">Company</span> <span class="o">=</span> <span class="kt">MkCompany</span>
+  <span class="p">{</span> <span class="n">name</span> <span class="o">::</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="n">employee</span> <span class="o">::</span> <span class="kt">Employee</span>
+  <span class="p">}</span>
+
+<span class="n">makeFieldLabelsNoPrefix</span> <span class="n">''Company</span>
+
+<span class="n">msg</span> <span class="o">::</span> <span class="kt">Company</span> <span class="o">-&gt;</span> <span class="kt">String</span>
+<span class="n">msg</span> <span class="n">c</span> <span class="o">=</span> <span class="n">view</span> <span class="p">(</span><span class="o">#</span><span class="n">employee</span> <span class="o">%</span> <span class="o">#</span><span class="n">name</span><span class="p">)</span> <span class="n">c</span> <span class="o">++</span> <span class="s">" works at "</span> <span class="o">++</span> <span class="n">view</span> <span class="o">#</span><span class="n">name</span> <span class="n">c</span>
+
+<span class="n">setEmployeeName</span> <span class="o">::</span> <span class="kt">Company</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="o">-&gt;</span> <span class="kt">Company</span>
+<span class="n">setEmployeeName</span> <span class="n">c</span> <span class="n">newEmpName</span> <span class="o">=</span> <span class="n">set</span> <span class="p">(</span><span class="o">#</span><span class="n">employee</span> <span class="o">%</span> <span class="o">#</span><span class="n">name</span><span class="p">)</span> <span class="n">newEmpName</span> <span class="n">c</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>First, we use <code class="language-plaintext highlighter-rouge">makeFieldLabelsNoPrefix</code> from the <code class="language-plaintext highlighter-rouge">optics-th</code> library to generate lenses (a type of optic). After this, we can implement our getter and setter functions simply using the <code class="language-plaintext highlighter-rouge">#&lt;field-name&gt;</code> syntax. To compose two lenses together, we use the <code class="language-plaintext highlighter-rouge">(%)</code> operator from <code class="language-plaintext highlighter-rouge">optics-core</code>. For instance, the equivalent of <code class="language-plaintext highlighter-rouge">myCompany.employee.name</code> is <code class="language-plaintext highlighter-rouge">view (#employee % #name) myCompany</code>.</p>
+
+<h3 id="tell-me-the-catch">Tell me the catch</h3>
+
+<p>TemplateHaskell (used in <code class="language-plaintext highlighter-rouge">makeFieldLabelsNoPrefix</code>) has several drawbacks. One of the major annoyances is how it requires the source code to be in a specific order. That is, normally you can reorder code in a Haskell module to your heart’s content:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="rouge-code"><pre><span class="n">a</span> <span class="o">::</span> <span class="kt">Int</span> <span class="o">-&gt;</span> <span class="kt">Int</span>
+<span class="n">a</span> <span class="n">x</span> <span class="o">=</span> <span class="n">f</span> <span class="n">x</span>
+
+<span class="n">f</span> <span class="o">::</span> <span class="kt">Int</span> <span class="o">-&gt;</span> <span class="kt">Int</span>
+<span class="n">f</span> <span class="o">=</span> <span class="o">...</span>
+
+<span class="c1">-- It makes no difference whether 'f' or 'a' comes first in a haskell source file.</span>
+
+<span class="n">f</span> <span class="o">::</span> <span class="kt">Int</span> <span class="o">-&gt;</span> <span class="kt">Int</span>
+<span class="n">f</span> <span class="o">=</span> <span class="o">...</span>
+
+<span class="n">a</span> <span class="o">::</span> <span class="kt">Int</span> <span class="o">-&gt;</span> <span class="kt">Int</span>
+<span class="n">a</span> <span class="n">x</span> <span class="o">=</span> <span class="n">f</span> <span class="n">x</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>With TH this is no longer true. In particular, if you want to use the result of TH, the code that uses it must come <em>after</em> the TH code.</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="rouge-code"><pre><span class="c1">-- This works because the usage (msg) comes _after_ the TH definition</span>
+<span class="c1">-- (makeFieldLabelsNoPrefix)</span>
+<span class="n">makeFieldLabelsNoPrefix</span> <span class="n">''Company</span>
+
+<span class="n">msg</span> <span class="o">::</span> <span class="kt">Company</span> <span class="o">-&gt;</span> <span class="kt">String</span>
+<span class="n">msg</span> <span class="n">c</span> <span class="o">=</span> <span class="n">view</span> <span class="p">(</span><span class="o">#</span><span class="n">employee</span> <span class="o">%</span> <span class="o">#</span><span class="n">name</span><span class="p">)</span> <span class="n">c</span> <span class="o">++</span> <span class="s">" works at "</span> <span class="o">++</span> <span class="n">view</span> <span class="o">#</span><span class="n">name</span> <span class="n">c</span>
+
+<span class="c1">-- The below will trigger a "No instance for LabelOptic..." error</span>
+
+<span class="n">msg</span> <span class="o">::</span> <span class="kt">Company</span> <span class="o">-&gt;</span> <span class="kt">String</span>
+<span class="n">msg</span> <span class="n">c</span> <span class="o">=</span> <span class="n">view</span> <span class="p">(</span><span class="o">#</span><span class="n">employee</span> <span class="o">%</span> <span class="o">#</span><span class="n">name</span><span class="p">)</span> <span class="n">c</span> <span class="o">++</span> <span class="s">" works at "</span> <span class="o">++</span> <span class="n">view</span> <span class="o">#</span><span class="n">name</span> <span class="n">c</span>
+
+<span class="n">makeFieldLabelsNoPrefix</span> <span class="n">''Company</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>This can lead to cryptic “No instance for LabelOptic…” errors when there are multiple TH definitions and usages in the same module (“What do you mean no instance? <em>It’s right there</em>.”).</p>
+
+<p>TH also comes with other drawbacks:</p>
+
+<ul>
+  <li>Increases compilation time.</li>
+  <li>Prevents cross-compilation.</li>
+</ul>
+
+<p>Thus we can drop the dependency on <code class="language-plaintext highlighter-rouge">optics-th</code> and hand-write our lenses instead:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+</pre></td><td class="rouge-code"><pre><span class="kr">import</span> <span class="nn">Optics.Core</span> <span class="p">(</span><span class="kt">A_Lens</span><span class="p">,</span> <span class="nf">lensVL</span><span class="p">,</span> <span class="nf">set</span><span class="p">,</span> <span class="nf">view</span><span class="p">,</span> <span class="p">(</span><span class="o">%</span><span class="p">))</span>
+<span class="kr">import</span> <span class="nn">Optics.Label</span> <span class="p">(</span><span class="kt">LabelOptic</span><span class="p">(</span><span class="nf">labelOptic</span><span class="p">))</span>
+
+<span class="c1">-- makeFieldLabelsNoPrefix generates the below instances for each field.</span>
+<span class="c1">--</span>
+<span class="c1">-- The reason for the convoluted equality constraints (e.g. k ~ A_Lens, ...)</span>
+<span class="c1">-- over writing them directly (instance LabelOptic "name" A_Lens ...) is</span>
+<span class="c1">-- improved type inference.</span>
+<span class="c1">--</span>
+<span class="c1">-- The INLINEs are for performance.</span>
+
+<span class="c1">-- name lens for employee</span>
+<span class="kr">instance</span>
+  <span class="p">(</span><span class="n">k</span> <span class="o">~</span> <span class="kt">A_Lens</span><span class="p">,</span> <span class="n">a</span> <span class="o">~</span> <span class="kt">String</span><span class="p">,</span> <span class="n">b</span> <span class="o">~</span> <span class="kt">String</span><span class="p">)</span> <span class="o">=&gt;</span>
+  <span class="kt">LabelOptic</span> <span class="s">"name"</span> <span class="n">k</span> <span class="kt">Employee</span> <span class="kt">Employee</span> <span class="n">a</span> <span class="n">b</span>
+  <span class="kr">where</span>
+  <span class="n">labelOptic</span> <span class="o">=</span> <span class="n">lensVL</span> <span class="n">nameLens</span>
+    <span class="kr">where</span>
+      <span class="n">nameLens</span> <span class="o">::</span> <span class="kt">Functor</span> <span class="n">f</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="kt">String</span> <span class="o">-&gt;</span> <span class="n">f</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Employee</span> <span class="o">-&gt;</span> <span class="n">f</span> <span class="kt">Employee</span>
+      <span class="n">nameLens</span> <span class="n">f</span> <span class="p">(</span><span class="kt">MkEmployee</span> <span class="n">_name</span> <span class="n">_title</span> <span class="n">_age</span><span class="p">)</span> <span class="o">=</span>
+        <span class="n">fmap</span> <span class="p">(</span><span class="nf">\</span><span class="n">name'</span> <span class="o">-&gt;</span> <span class="kt">MkEmployee</span> <span class="n">name'</span> <span class="n">_title</span> <span class="n">_age</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span> <span class="n">_name</span><span class="p">)</span>
+  <span class="cp">{-# INLINE labelOptic #-}</span>
+
+<span class="c1">-- name lens for company</span>
+<span class="kr">instance</span>
+  <span class="p">(</span><span class="n">k</span> <span class="o">~</span> <span class="kt">A_Lens</span><span class="p">,</span> <span class="n">a</span> <span class="o">~</span> <span class="kt">String</span><span class="p">,</span> <span class="n">b</span> <span class="o">~</span> <span class="kt">String</span><span class="p">)</span> <span class="o">=&gt;</span>
+  <span class="kt">LabelOptic</span> <span class="s">"name"</span> <span class="n">k</span> <span class="kt">Company</span> <span class="kt">Company</span> <span class="n">a</span> <span class="n">b</span>
+  <span class="kr">where</span>
+  <span class="n">labelOptic</span> <span class="o">=</span> <span class="n">lensVL</span> <span class="n">nameLens</span>
+    <span class="kr">where</span>
+      <span class="n">nameLens</span> <span class="o">::</span> <span class="kt">Functor</span> <span class="n">f</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="kt">String</span> <span class="o">-&gt;</span> <span class="n">f</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Company</span> <span class="o">-&gt;</span> <span class="n">f</span> <span class="kt">Company</span>
+      <span class="n">nameLens</span> <span class="n">f</span> <span class="p">(</span><span class="kt">MkCompany</span> <span class="n">_name</span> <span class="n">_employee</span><span class="p">)</span> <span class="o">=</span>
+        <span class="n">fmap</span> <span class="p">(</span><span class="nf">\</span><span class="n">name'</span> <span class="o">-&gt;</span> <span class="kt">MkCompany</span> <span class="n">name'</span> <span class="n">_employee</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span> <span class="n">_name</span><span class="p">)</span>
+  <span class="cp">{-# INLINE labelOptic #-}</span>
+
+<span class="c1">-- employee lens for company</span>
+<span class="kr">instance</span>
+  <span class="p">(</span><span class="n">k</span> <span class="o">~</span> <span class="kt">A_Lens</span><span class="p">,</span> <span class="n">a</span> <span class="o">~</span> <span class="kt">Employee</span><span class="p">,</span> <span class="n">b</span> <span class="o">~</span> <span class="kt">Employee</span><span class="p">)</span> <span class="o">=&gt;</span>
+  <span class="kt">LabelOptic</span> <span class="s">"employee"</span> <span class="n">k</span> <span class="kt">Company</span> <span class="kt">Company</span> <span class="n">a</span> <span class="n">b</span>
+  <span class="kr">where</span>
+  <span class="n">labelOptic</span> <span class="o">=</span> <span class="n">lensVL</span> <span class="n">employeeLens</span>
+    <span class="kr">where</span>
+      <span class="n">employeeLens</span> <span class="o">::</span> <span class="kt">Functor</span> <span class="n">f</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="kt">Employee</span> <span class="o">-&gt;</span> <span class="n">f</span> <span class="kt">Employee</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Company</span> <span class="o">-&gt;</span> <span class="n">f</span> <span class="kt">Company</span>
+      <span class="n">employeeLens</span> <span class="n">f</span> <span class="p">(</span><span class="kt">MkCompany</span> <span class="n">_name</span> <span class="n">_employee</span><span class="p">)</span> <span class="o">=</span>
+        <span class="n">fmap</span> <span class="p">(</span><span class="nf">\</span><span class="n">employee'</span> <span class="o">-&gt;</span> <span class="kt">MkCompany</span> <span class="n">_name</span> <span class="n">employee'</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span> <span class="n">_employee</span><span class="p">)</span>
+  <span class="cp">{-# INLINE labelOptic #-}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>That’s it! A bit heavy on the boilerplate, but this solves both duplicate fields <strong>and</strong> nested updates without any TH drawbacks. Additionally, we receive nice features beyond normal getters and setters like <em>modify</em>.</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="kr">import</span> <span class="nn">Optics.Core</span> <span class="p">(</span><span class="nf">over</span><span class="p">)</span>
+
+<span class="c1">-- using 'over' to _modify_ a nested field rather than simply setting or</span>
+<span class="c1">-- getting it.</span>
+<span class="n">incEmployeeAge</span> <span class="o">::</span> <span class="kt">Company</span> <span class="o">-&gt;</span> <span class="kt">Company</span>
+<span class="n">incEmployeeAge</span> <span class="n">c</span> <span class="o">=</span> <span class="n">over</span> <span class="p">(</span><span class="o">#</span><span class="n">employee</span> <span class="o">%</span> <span class="o">#</span><span class="n">age</span><span class="p">)</span> <span class="p">(</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="n">c</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>In general, optics offer a powerful way to view and modify data, far surpassing what mere getters and setters can do.<sup id="fnref:fn3" role="doc-noteref"><a href="#fn:fn3" class="footnote" rel="footnote">3</a></sup></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Haskell offers a useful record syntax for manipulating data, but this syntax comes with some shortcomings. We have shown two different ways to overcome this: The <code class="language-plaintext highlighter-rouge">-XOverloadedRecordDot</code> extension and the <code class="language-plaintext highlighter-rouge">optics-core</code> library. Which should you use?</p>
+
+<p>It depends.</p>
+
+<p><code class="language-plaintext highlighter-rouge">-XOverloadedRecordDot</code> is undoubtedly simpler and friendlier to people coming from other languages. If the primary problem you face is duplicate record fields and you don’t need nested updates all that often, perhaps <code class="language-plaintext highlighter-rouge">-XOverloadedRecordDot</code> is the best choice (and nested updates are hopefully not too far away).</p>
+
+<p>If, on the other hand, you want the most complete, sophisticated way of handling data today, take the plunge, and explore how deep the optics rabbit-hole goes.</p>
+
+<hr />
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:fn1" role="doc-endnote">
+      <p>There is an extension <code class="language-plaintext highlighter-rouge">-XDuplicateRecordFields</code> that overcomes this limitation. This only allows the <em>definition</em> – not actual <strong>usage</strong> – so it is not a complete solution. <a href="#fnref:fn1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:fn2" role="doc-endnote">
+      <p>I wrote about this problem as a motivator for optics <a href="https://tbidne.github.io/posts/optics/">here</a>. <a href="#fnref:fn2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:fn3" role="doc-endnote">
+      <p>Not only can optics handle fields via lenses, but we can also manipulate sum types via <em>prisms</em>. A full description is beyond the scope of this article, however. <a href="#fnref:fn3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>]]></content><author><name></name></author><category term="Programming" /><category term="functional programming" /><category term="haskell" /><category term="programming" /><summary type="html"><![CDATA[Introduction]]></summary></entry><entry><title type="html">Whence cometh optics?</title><link href="/posts/optics/" rel="alternate" type="text/html" title="Whence cometh optics?" /><published>2023-04-14T12:00:00+12:00</published><updated>2024-02-15T17:00:00+13:00</updated><id>/posts/optics</id><content type="html" xml:base="/posts/optics/"><![CDATA[<h2 id="introduction">Introduction</h2>
+
+<p><strong>Optics</strong> are a powerful tool in certain niche areas of programming, but they can be confusing and intimidating, especially for those coming from a more traditional programming background. What are optics, why would one use them, and should you care? This post will explore each of these questions.</p>
+
+<p>This is not a comprehensive overview of optics, nor is it an explanation of how they work. Rather, it is an introduction to the topic, motivated by the problem they were designed to solve.</p>
+
+<h2 id="classic-getterssetters">Classic Getters/Setters</h2>
+
+<p>The core concept involves data “getters and setters”, so let’s look at a traditional example:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre></td><td class="rouge-code"><pre><span class="kd">class</span> <span class="nc">Email</span> <span class="o">{</span>
+  <span class="c1">// i.e. local@domain</span>
+  <span class="nc">String</span> <span class="n">local</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+  <span class="nc">String</span> <span class="n">domain</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="nf">Email</span><span class="o">(</span><span class="nc">String</span> <span class="n">local</span><span class="o">,</span> <span class="nc">String</span> <span class="n">domain</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">local</span> <span class="o">=</span> <span class="n">local</span><span class="o">;</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">domain</span> <span class="o">=</span> <span class="n">domain</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getLocal</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">local</span><span class="o">;</span> <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setLocal</span><span class="o">(</span><span class="nc">String</span> <span class="n">local</span><span class="o">)</span> <span class="o">{</span> <span class="k">this</span><span class="o">.</span><span class="na">local</span> <span class="o">=</span> <span class="n">local</span><span class="o">;</span> <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getDomain</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">domain</span><span class="o">;</span> <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setDomain</span><span class="o">(</span><span class="nc">String</span> <span class="n">domain</span><span class="o">)</span> <span class="o">{</span> <span class="k">this</span><span class="o">.</span><span class="na">domain</span> <span class="o">=</span> <span class="n">domain</span><span class="o">;</span> <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>We have a type <code class="language-plaintext highlighter-rouge">Email</code> for representing email addresses with two fields: <code class="language-plaintext highlighter-rouge">local</code> and <code class="language-plaintext highlighter-rouge">domain</code>.</p>
+
+<p>The getters (<code class="language-plaintext highlighter-rouge">getLocal</code> and <code class="language-plaintext highlighter-rouge">getDomain</code>) are used to retrieve the field while the setters (<code class="language-plaintext highlighter-rouge">setLocal</code> and <code class="language-plaintext highlighter-rouge">setDomain</code>) are used to set the field.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="rouge-code"><pre><span class="nc">Email</span> <span class="n">emailVar</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Email</span> <span class="o">(</span><span class="s">"user"</span><span class="o">,</span> <span class="s">"domain.com"</span><span class="o">);</span>
+
+<span class="c1">// get fields</span>
+<span class="nc">String</span> <span class="n">localVar</span> <span class="o">=</span> <span class="n">emailVar</span><span class="o">.</span><span class="na">getLocal</span><span class="o">();</span>
+<span class="nc">String</span> <span class="n">domainVar</span> <span class="o">=</span> <span class="n">emailVar</span><span class="o">.</span><span class="na">getDomain</span><span class="o">();</span>
+
+<span class="c1">// set fields</span>
+<span class="n">emailVar</span><span class="o">.</span><span class="na">setLocal</span><span class="o">(</span><span class="s">"new_user"</span><span class="o">);</span>
+<span class="n">emailVar</span><span class="o">.</span><span class="na">setDomain</span><span class="o">(</span><span class="s">"new_domain.com"</span><span class="o">);</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>We can view <code class="language-plaintext highlighter-rouge">getLocal</code> as a function that takes an <code class="language-plaintext highlighter-rouge">Email</code> (implicit <code class="language-plaintext highlighter-rouge">this</code>) and returns a <code class="language-plaintext highlighter-rouge">String</code>. Similarly, <code class="language-plaintext highlighter-rouge">setLocal</code> can be viewed as a function that takes a <code class="language-plaintext highlighter-rouge">String</code>, an <code class="language-plaintext highlighter-rouge">Email</code> (<code class="language-plaintext highlighter-rouge">this</code>), and returns a new <code class="language-plaintext highlighter-rouge">Email</code> (modified <code class="language-plaintext highlighter-rouge">this</code>). That is:</p>
+
+\[\begin{align*}
+  &amp; \text{getLocal} : \text{Email} \to \text{String} \\
+  &amp; \text{setLocal} : \text{String} \times \text{Email} \to \text{Email}
+\end{align*}\]
+
+<p>Together, a getter + setter pair for a given field represents a way to “focus” on a particular field.</p>
+
+<p>An important feature of getters/setters is that they can be <em>composed</em>. That is, if we have</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="kd">class</span> <span class="nc">Customer</span> <span class="o">{</span>
+  <span class="nc">Integer</span> <span class="n">cid</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+  <span class="nc">Email</span> <span class="n">email</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="nc">Email</span> <span class="nf">getEmail</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">email</span><span class="o">;</span> <span class="o">}</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setEmail</span><span class="o">(</span><span class="nc">Email</span> <span class="n">email</span><span class="o">)</span> <span class="o">{</span> <span class="k">this</span><span class="o">.</span><span class="na">email</span> <span class="o">=</span> <span class="n">email</span><span class="o">;</span> <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Then we can compose the getters/setters together:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="nc">Customer</span> <span class="n">customerVar</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Customer</span> <span class="o">(...);</span>
+
+<span class="nc">String</span> <span class="n">domainVar</span> <span class="o">=</span> <span class="n">customerVar</span><span class="o">.</span><span class="na">getEmail</span><span class="o">().</span><span class="na">getDomain</span><span class="o">();</span>
+
+<span class="n">customerVar</span><span class="o">.</span><span class="na">getEmail</span><span class="o">().</span><span class="na">setDomain</span><span class="o">(</span><span class="s">"new_domain.com"</span><span class="o">);</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>We can therefore carry out an arbitrarily deep “get” or “set”, simply with composition.</p>
+
+<h2 id="haskell-getterssetters">Haskell Getters/Setters</h2>
+
+<p>Optics are most commonly used in Haskell, so let’s look at how we would replicate the above java. First, let’s create the equivalent types.</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="rouge-code"><pre><span class="kr">data</span> <span class="kt">Email</span>
+  <span class="o">=</span> <span class="kt">MkEmail</span>
+    <span class="p">{</span> <span class="n">local</span> <span class="o">::</span> <span class="kt">String</span><span class="p">,</span>
+      <span class="n">domain</span> <span class="o">::</span> <span class="kt">String</span>
+    <span class="p">}</span>
+
+<span class="kr">data</span> <span class="kt">Customer</span>
+  <span class="o">=</span> <span class="kt">MkCustomer</span>
+    <span class="p">{</span> <span class="n">cid</span> <span class="o">::</span> <span class="kt">Integer</span><span class="p">,</span>
+      <span class="n">email</span> <span class="o">::</span> <span class="kt">Email</span>
+    <span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>With this “record syntax”, haskell gives us “selectors” that are similar to java getters/setters.</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="rouge-code"><pre><span class="kr">let</span> <span class="n">emailVar</span> <span class="o">::</span> <span class="kt">Email</span>
+    <span class="n">emailVar</span> <span class="o">=</span> <span class="kt">MkEmail</span> <span class="s">"user"</span> <span class="s">"domain.com"</span>
+
+<span class="c1">-- analogous to "email.getLocal()". Notice this is "backwards" as the 'local'</span>
+<span class="c1">-- and 'domain' fields are essentially functions.</span>
+<span class="c1">--</span>
+<span class="c1">-- local : Email -&gt; String</span>
+<span class="c1">-- domain : Email -&gt; String</span>
+<span class="kr">let</span> <span class="n">localVar</span> <span class="o">::</span> <span class="kt">String</span>
+    <span class="n">localVar</span> <span class="o">=</span> <span class="n">local</span> <span class="n">emailVar</span>
+
+    <span class="n">domainVar</span> <span class="o">::</span> <span class="kt">String</span>
+    <span class="n">domainVar</span> <span class="o">=</span> <span class="n">domain</span> <span class="n">emailVar</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Updates are more interesting. Data in haskell is <em>immutable</em> i.e. once you declare something it is constant; it cannot be changed. This is an enormously useful feature, but it poses a problem. Even if we do not need true mutability, we often want to <em>model</em> it. How do we do this in an immutable world? Well, we have to create <em>new</em> data that copies the old fields over together with the new field.</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre><span class="c1">-- Replicating emailVar.setDomain("new_domain.com"). Analogous to</span>
+<span class="c1">-- Email newEmail = new Email(emailVar.getLocal(), "new_domain.com")</span>
+<span class="kr">let</span> <span class="n">newEmail</span> <span class="o">::</span> <span class="kt">Email</span>
+    <span class="n">newEmail</span> <span class="o">=</span> <span class="kt">MkEmail</span> <span class="p">(</span><span class="n">local</span> <span class="n">emailVar</span><span class="p">)</span> <span class="s">"new_domain.com"</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>There is also a record syntax for creation, which can be clearer, if also less concise.</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="kr">let</span> <span class="n">newEmail</span> <span class="o">=</span>
+      <span class="kt">MkEmail</span>
+        <span class="p">{</span> <span class="n">local</span> <span class="o">=</span> <span class="n">local</span> <span class="n">emailVar</span><span class="p">,</span>
+          <span class="n">domain</span> <span class="o">=</span> <span class="s">"new_domain.com"</span>
+        <span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Make no mistake, in neither case are we modifying the original <code class="language-plaintext highlighter-rouge">emailVar</code>. It is constant. We are creating a new email with the fields we want, thus <em>modeling</em> mutability, which is usually all we need.<sup id="fnref:fn1" role="doc-noteref"><a href="#fn:fn1" class="footnote" rel="footnote">1</a></sup></p>
+
+<h2 id="the-problem">The problem</h2>
+
+<p>So far this works well, ergonomics notwithstanding. What about the nested case? Getting works fine:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="c1">-- customerVar.getEmail().getDomain()</span>
+<span class="kr">let</span> <span class="n">domainVar</span> <span class="o">::</span> <span class="kt">String</span>
+    <span class="n">domainVar</span> <span class="o">=</span> <span class="n">domain</span> <span class="p">(</span><span class="n">email</span> <span class="n">customerVar</span><span class="p">)</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>It is update that is the problem. If we want to update a field, we have to recreate the entire data structure with our new field.</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="rouge-code"><pre><span class="kr">let</span> <span class="c1">-- recreate emailVar with new domain</span>
+    <span class="n">newEmail</span> <span class="o">=</span>
+      <span class="kt">MkEmail</span>
+        <span class="p">{</span> <span class="n">local</span> <span class="o">=</span> <span class="n">local</span> <span class="n">emailVar</span><span class="p">,</span>
+          <span class="n">domain</span> <span class="o">=</span> <span class="s">"new_domain.com"</span>
+        <span class="p">}</span>
+
+    <span class="c1">-- recreate customerVar with new email</span>
+    <span class="n">newCustomer</span> <span class="o">=</span>
+      <span class="kt">MkCustomer</span>
+        <span class="p">{</span> <span class="n">cid</span> <span class="o">=</span> <span class="n">cid</span> <span class="n">customerVar</span><span class="p">,</span>
+          <span class="n">email</span> <span class="o">=</span> <span class="n">newEmail</span>
+        <span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>It is as if we had to do the following in java:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="c1">// rather than customerVar.getEmail().setDomain("new_domain.com")</span>
+
+<span class="c1">// create newEmail with the new field</span>
+<span class="nc">Email</span> <span class="n">newEmail</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Email</span><span class="o">(</span><span class="n">emailVar</span><span class="o">.</span><span class="na">getLocal</span><span class="o">(),</span> <span class="s">"new_domain.com"</span><span class="o">);</span>
+<span class="c1">// create a new Customer w/ our changed field</span>
+<span class="nc">Customer</span> <span class="n">newCustomer</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Customer</span><span class="o">(</span><span class="n">customerVar</span><span class="o">.</span><span class="na">getCid</span><span class="o">(),</span> <span class="n">newEmail</span><span class="o">);</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Obviously this does not scale at all. Something like:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="n">x</span><span class="o">.</span><span class="na">getA</span><span class="o">().</span><span class="na">getB</span><span class="o">().</span><span class="na">setC</span><span class="o">(</span><span class="k">new</span> <span class="no">C</span><span class="o">(</span><span class="mi">5</span><span class="o">));</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>would become</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre><span class="no">C</span> <span class="n">newC</span> <span class="o">=</span> <span class="k">new</span> <span class="no">C</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
+<span class="no">B</span> <span class="n">newB</span> <span class="o">=</span> <span class="k">new</span> <span class="no">B</span><span class="o">(</span><span class="n">newC</span><span class="o">);</span>
+<span class="no">A</span> <span class="n">newA</span> <span class="o">=</span> <span class="k">new</span> <span class="no">A</span><span class="o">(</span><span class="n">newB</span><span class="o">);</span>
+<span class="no">X</span> <span class="n">newX</span> <span class="o">=</span> <span class="k">new</span> <span class="no">X</span><span class="o">(</span><span class="n">newA</span><span class="o">);</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Cthulhu help you if your data is complicated (e.g. has many fields, lists, etc.). In other words, <em>nested</em> updates and immutable data do not mix well. It is this problem that optics are designed to solve.</p>
+
+<h2 id="lenses">Lenses</h2>
+
+<p>There are many types of optics, but for our purposes we will only consider <strong>lenses</strong>, arguably the easiest to motivate. Lenses take the idea of a “getter/setter pair” and turn it into actual data. Without getting into the implementation, a lens in haskell looks something like:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="n">emailDomainLens</span> <span class="o">::</span> <span class="kt">Lens</span> <span class="kt">Email</span> <span class="kt">String</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>That is, <code class="language-plaintext highlighter-rouge">emailDomainLens</code> represents the concept of “getting and setting the String field domain” on the type <code class="language-plaintext highlighter-rouge">Email</code>. This gives us an alternative to the selectors used before:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre></td><td class="rouge-code"><pre><span class="c1">-- Like email.getDomain(). 'view' is a function that takes in a lens, data, and</span>
+<span class="c1">-- "activates" the getter portion of the lens to get the desired field. Morally,</span>
+<span class="c1">--</span>
+<span class="c1">-- view :: Lens s a -&gt; s -&gt; a</span>
+<span class="kr">let</span> <span class="n">domainVar</span> <span class="o">::</span> <span class="kt">String</span>
+    <span class="c1">-- Instead of: domainVar = domain emailVar</span>
+    <span class="n">domainVar</span> <span class="o">=</span> <span class="n">view</span> <span class="n">emailDomainLens</span> <span class="n">emailVar</span>
+
+<span class="c1">-- Like email.setDomain("new_domain.com"). 'set' is a function that takes in a lens, the</span>
+<span class="c1">-- new value, data, and "activates" the setter portion of the lens to set the</span>
+<span class="c1">-- desired field. Morally,</span>
+<span class="c1">--</span>
+<span class="c1">-- set :: Lens s a -&gt; a -&gt; s -&gt; s</span>
+<span class="kr">let</span> <span class="n">newEmail</span> <span class="o">::</span> <span class="kt">Email</span>
+    <span class="c1">-- Instead of: newEmail = MkEmail (local emailVar) "new_domain.com"</span>
+    <span class="n">newEmail</span> <span class="o">=</span> <span class="n">set</span> <span class="n">emailDomainLens</span> <span class="s">"new_domain.com"</span> <span class="n">emailVar</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>This is why lenses are referred to as “first class getters/setters”. Rather than having some syntax built into the language (e.g. java methods), lenses are just like anything else in haskell: a type we can define ourselves that implements the “getter/setter” concept with respect to some data.</p>
+
+<p>At this point you would be forgiven for wondering what the big deal is. This seems like a lot of work just to come up with a worse syntax. Why go through all this trouble? The crucial advantage that lenses have over traditional haskell updates is that they can be <em>composed</em>. Remember the previous example?</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td class="rouge-code"><pre><span class="kr">let</span> <span class="n">newEmail</span> <span class="o">=</span>
+      <span class="kt">MkEmail</span>
+        <span class="p">{</span> <span class="n">local</span> <span class="o">=</span> <span class="n">local</span> <span class="n">emailVar</span><span class="p">,</span>
+          <span class="n">domain</span> <span class="o">=</span> <span class="s">"new_domain.com"</span>
+        <span class="p">}</span>
+    <span class="n">newCustomer</span> <span class="o">=</span>
+      <span class="kt">MkCustomer</span>
+        <span class="p">{</span> <span class="n">cid</span> <span class="o">=</span> <span class="n">cid</span> <span class="n">customerVar</span><span class="p">,</span>
+          <span class="n">email</span> <span class="o">=</span> <span class="n">newEmail</span>
+        <span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>The fundamental problem is that while we can fairly easily update <code class="language-plaintext highlighter-rouge">customer.email</code> and <code class="language-plaintext highlighter-rouge">email.domain</code>, we cannot compose these to easily update <code class="language-plaintext highlighter-rouge">customer.email.domain</code>. Lenses do not have this problem. If we have a <code class="language-plaintext highlighter-rouge">Lens a b</code> and a <code class="language-plaintext highlighter-rouge">Lens b c</code>, then we can easily form a <code class="language-plaintext highlighter-rouge">Lens a c</code>.</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre></td><td class="rouge-code"><pre><span class="c1">-- customerEmailLens is a lens for the Email field on the Customer type</span>
+<span class="n">customerEmailLens</span> <span class="o">::</span> <span class="kt">Lens</span> <span class="kt">Customer</span> <span class="kt">Email</span>
+
+<span class="kr">let</span> <span class="c1">-- We can freely compose (combine) lenses together e.g.</span>
+    <span class="c1">--</span>
+    <span class="c1">--   innerLens :: Lens s a</span>
+    <span class="c1">--   outerLens :: Lens t s</span>
+    <span class="c1">--</span>
+    <span class="c1">--   (outerLens . innerLens) :: Lens t a</span>
+    <span class="n">customerDomainLens</span> <span class="o">::</span> <span class="kt">Lens</span> <span class="kt">Customer</span> <span class="kt">String</span>
+    <span class="n">customerDomainLens</span> <span class="o">=</span> <span class="n">customerEmailLens</span> <span class="o">.</span> <span class="n">emailDomainLens</span>
+
+    <span class="c1">-- we now have our customerVar.getEmail().setDomain("new_domain.com")!</span>
+    <span class="n">newCustomer</span> <span class="o">::</span> <span class="kt">Customer</span>
+    <span class="n">newCustomer</span> <span class="o">=</span> <span class="n">set</span> <span class="n">customerDomainLens</span> <span class="s">"new_domain.com"</span> <span class="n">customerVar</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>The advantage is easily seen with the “extreme” example:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="n">x</span><span class="o">.</span><span class="na">getA</span><span class="o">().</span><span class="na">getB</span><span class="o">().</span><span class="na">setC</span><span class="o">(</span><span class="k">new</span> <span class="no">C</span><span class="o">(</span><span class="mi">5</span><span class="o">));</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="c1">-- composition FTW</span>
+<span class="kr">let</span> <span class="n">newX</span> <span class="o">=</span> <span class="n">set</span> <span class="p">(</span><span class="n">aLens</span> <span class="o">.</span> <span class="n">bLens</span> <span class="o">.</span> <span class="n">cLens</span><span class="p">)</span> <span class="mi">5</span> <span class="n">x</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Thus we arrive at the primary motivation. Even if we do not need <strong>true</strong> mutability, we often need to model it. This can be quite difficult with immutable data. Unless our language provides special syntax for it, we have to manually recreate the data. Lenses exist to recover the ergonomics of mutability (i.e. nested getters/setters) in an immutable world.</p>
+
+<h2 id="should-you-care">Should you care?</h2>
+
+<p>For working with immutable data, it is certainly worth being aware of lenses (and other optics). They are never necessary, but they can make life much easier.</p>
+
+<p>However, this is not the world inhabited by most programming. For better or worse, most programming languages fully embrace true mutability, thus we immediately have access to nested getters/setters. In this world, should you care about lenses?</p>
+
+<p>Probably not, as a major motivator is gone. Java doesn’t have this problem as all data is mutable, thus there is little need to torture yourself trying to implement lenses in java (of course, <a href="https://github.com/Mojang/DataFixerUpper/blob/f6f24872c23a3be12c33fb6fc9e5372fad5f9cee/src/main/java/com/mojang/datafixers/optics/Lens.java">masochism exists</a>).<sup id="fnref:fn2" role="doc-noteref"><a href="#fn:fn2" class="footnote" rel="footnote">2</a></sup></p>
+
+<p>To put it more directly, you do not typically want to use lenses for their own sake, as an alternative to normal getters/setters. You use them because you want to use immutable data, and lenses make immutability less painful.</p>
+
+<h2 id="addendum">Addendum</h2>
+
+<p>While composition is the primary motivation for lenses, it isn’t the only advantage.</p>
+
+<p>In java you are mildly screwed if you want to update a field, rather than just set it.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="no">C</span> <span class="n">c</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="na">getA</span><span class="o">().</span><span class="na">getB</span><span class="o">().</span><span class="na">getC</span><span class="o">();</span>
+<span class="n">c</span><span class="o">.</span><span class="na">setVal</span><span class="o">(</span><span class="n">c</span><span class="o">.</span><span class="na">getVal</span><span class="o">()</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span> <span class="c1">// can't do this inline</span>
+<span class="n">x</span><span class="o">.</span><span class="na">getA</span><span class="o">().</span><span class="na">getB</span><span class="o">().</span><span class="na">setC</span><span class="o">(</span><span class="n">c</span><span class="o">);</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Lenses handle this just fine:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre><span class="c1">-- 'over' takes in a lens, a _function_, and the data to modify. Morally,</span>
+<span class="c1">--</span>
+<span class="c1">--- over :: Lens s a -&gt; (a -&gt; a) -&gt; s -&gt; s</span>
+<span class="kr">let</span> <span class="n">newX</span> <span class="o">=</span> <span class="n">over</span> <span class="p">(</span><span class="n">aLens</span> <span class="o">.</span> <span class="n">bLens</span> <span class="o">.</span> <span class="n">cLens</span><span class="p">)</span> <span class="p">(</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="n">x</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>When people say lenses are more powerful than traditional getters/setters, this is what they mean. Because lenses are just ordinary data, we can manipulate them like anything else and define custom behavior (in this case <code class="language-plaintext highlighter-rouge">over</code> for <em>modifying</em> a field, rather than mere <code class="language-plaintext highlighter-rouge">set</code>).</p>
+
+<p>Lenses are just one example of an <strong>optic</strong>. For instance, <strong>prisms</strong> are another type of optic that adapts the lens concept to sum types.</p>
+
+<hr />
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:fn1" role="doc-endnote">
+      <p>Technically haskell has “update syntax” for this that looks like <code class="language-plaintext highlighter-rouge">newEmail = emailVar { domain = "new_domain.com" }</code>. But we cannot “nest” updates (i.e. it does not compose), thus it is not a general solution to the described problem. <a href="#fnref:fn1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:fn2" role="doc-endnote">
+      <p>Not to mention, it is not possible to implement lenses (or other optics) in most languages as the concept requires Higher-Kinded Types (think “nested generics” e.g. <code class="language-plaintext highlighter-rouge">F&lt;A&gt;</code>), which very few languages support. It is only achievable in Java through an impressive yet hideous <a href="https://github.com/highj/highj">hack</a>. <a href="#fnref:fn2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>]]></content><author><name></name></author><category term="Programming" /><category term="functional programming" /><category term="haskell" /><category term="programming" /><summary type="html"><![CDATA[Introduction]]></summary></entry><entry><title type="html">Monads are just monoids in the category of endofunctors, what’s the problem?</title><link href="/posts/monads-monoids/" rel="alternate" type="text/html" title="Monads are just monoids in the category of endofunctors, what’s the problem?" /><published>2020-06-29T12:00:00+12:00</published><updated>2023-06-29T12:00:00+12:00</updated><id>/posts/monads-monoids</id><content type="html" xml:base="/posts/monads-monoids/"><![CDATA[<h2 id="introduction">Introduction</h2>
+
+<p>The title is from James Iry’s classic <a href="https://james-iry.blogspot.com/2009/05/brief-incomplete-and-mostly-wrong.html">A Brief, Incomplete, and Mostly Wrong History of Programming Languages</a>, an hilarious rundown of various programming languages. The statement was lifted from an observation in Saunders Mac Lane’s <em>Categories for The Working Mathematician</em>:</p>
+
+<blockquote>
+  <p>All told, a monad in X is just a monoid in the category of endofunctors of X, with product × replaced by composition of endofunctors and unit set by the identity endofunctor.</p>
+</blockquote>
+
+<p>Monads are known for being difficult to learn, and this phrase is a well-known joke in the functional programming community, the joke being that it doesn’t make sense to anyone who doesn’t already understand it.</p>
+
+<p>The goal of this post is to explain this statement to someone who knows some category theory (e.g. the definition of category, functor), but has yet to put the pieces together.</p>
+
+<p>We will review the definitions in light detail, assuming familiarity. We will also omit some technical requirements, such as commutative diagrams and coherence conditions. To start, we will slightly amend the statement for clarity:</p>
+
+<blockquote>
+  <p>A monad is an example of a monoid in the category of endofunctors.</p>
+</blockquote>
+
+<p>Or in symbols,</p>
+
+<blockquote>
+  <p>\(M\) is a monad \(\implies M\) is a monoid in the category of endofunctors.</p>
+</blockquote>
+
+<p>Notice that the implication is one-way i.e. the converse is not necessarily true. More on this later.</p>
+
+<h2 id="monoidal-categories">Monoidal categories</h2>
+
+<p><strong>Definition:</strong> A <strong>monoidal category</strong> \((C, \otimes, I)\) is a category \(C\) equipped with</p>
+
+<ul>
+  <li>\(\otimes : C \times C \rightarrow C\), a bifunctor called the <strong>monoidal product</strong>.</li>
+  <li>\(I\), an object in \(C\) that behaves like the identity with \(\otimes\).</li>
+</ul>
+
+<p><strong>Definition:</strong> A <strong>monoid object</strong>, or simply <strong>monoid</strong>, is an object \(A\) in \(C\) with two arrows:</p>
+
+\[\begin{align*}
+  &amp; \eta : I          &amp;&amp; \rightarrow A\\
+  &amp; \mu : A \otimes A &amp;&amp; \rightarrow A
+\end{align*}\]
+
+<p><strong>Example:</strong> \((\textbf{Set}, \times, *)\) is a monoidal category where \(\times\) is cartesian product and \(*\) is any singleton set. A monoid object in this category is a set \(A\) with functions</p>
+
+\[\begin{align*}
+  &amp; \eta : *         &amp;&amp; \rightarrow A\\
+  &amp; \mu : A \times A &amp;&amp; \rightarrow A
+\end{align*}\]
+
+<p>This yields the familiar definition of a monoid from abstract algebra i.e. a set with a binary function (\(\mu\)) and an identity (given by \(\eta\)).</p>
+
+<p>To see this, consider the cyclic group \(\mathbb{Z}/n\mathbb{Z} := \{1, 2, \ldots, n\}\) and define functions</p>
+
+\[\begin{align*}
+  &amp; \eta(x)   &amp;&amp; = 0\\
+  &amp; \mu(x, y) &amp;&amp; \equiv x + y \pmod n
+\end{align*}\]
+
+<p>This gives the monoidal structure and is equivalent to the more abstract definition given above.</p>
+
+<h2 id="monads">Monads</h2>
+
+<p><strong>Definition:</strong> Given a category \(C\), a <strong>monad</strong> is a triple \((T, \eta, \mu)\) with</p>
+
+<ul>
+  <li>\(T : C \rightarrow C\), an endofunctor on \(C\).</li>
+  <li>Natural transformations:</li>
+</ul>
+
+\[\begin{align*}
+  &amp; \eta : 1_C      &amp;&amp; \rightarrow T\\
+  &amp; \mu : T \circ T &amp;&amp; \rightarrow T
+\end{align*}\]
+
+<p>where \(1_C\) is the identity functor on \(C\) and \(T \circ T\) is \(T\) composed with itself via <em>functor</em> composition. Note that \(T \circ T\) is sometimes written as \(T^2\).</p>
+
+<p><strong>Example:</strong> Again consider \(\textbf{Set}\), and let \(T : \textbf{Set} \rightarrow \textbf{Set}\) be the power set functor. Then \((T, \eta, \mu)\) is a monad on \(\textbf{Set}\) where \(\eta\) maps each \(a \in A\) to \(\{a\}\), and \(\mu\) maps a nested set to its union. That is,</p>
+
+\[\begin{align*}
+  &amp; \eta(A) = \bigcup_{a \in A} \{a\} \\
+  &amp; \mu(A) = \bigcup_{a \in A} a
+\end{align*}\]
+
+<h2 id="category-of-endofunctors">Category of endofunctors</h2>
+
+<p><strong>Definition:</strong> Every category \(C\) gives rise to a category of endofunctors \(\text{End}_C\). The objects in this category are endofunctors \(T : C \rightarrow C\), and the arrows are natural transformations.</p>
+
+<h2 id="putting-it-all-together">Putting it all together</h2>
+
+<p>\((\text{End}_C, \circ, 1_C)\) is a monoidal category. A monoid in this category, then, is an endofunctor \(T\) with natural transformations:</p>
+
+\[\begin{align*}
+  &amp; \eta : 1_C      &amp;&amp; \rightarrow T\\
+  &amp; \mu : T \circ T &amp;&amp; \rightarrow T
+\end{align*}\]
+
+<p>This is exactly the definition of a monad! Putting it back into words:</p>
+
+<blockquote>
+  <p>A monad \((T, \eta, \mu)\) is a monoid in \((\text{End}_C, \circ, 1_C)\).</p>
+</blockquote>
+
+<h2 id="coda">Coda</h2>
+
+<p>Remember this comment?</p>
+
+<blockquote>
+  <p>Notice that the implication is one-way i.e. the converse is not necessarily true.</p>
+</blockquote>
+
+<p>This is due to there being more than one way of defining a “monoid in the category of endofunctors”. We have taken the monoidal product \(\otimes\) to be \(\circ\), functor composition. In this case, yes, a monoid in this category is exactly a monad.</p>
+
+<p>But observe that this definition leaves open the possibility of using a different monoidal product. In particular, we could take \(\otimes\) to be <a href="https://en.wikipedia.org/wiki/Day_convolution"><strong>Day Convolution</strong></a>, sometimes written as \(\star\). In this case we get a <em>different</em> “monoid in the category of endofunctors”, and in fact a monoid in this category is a <strong>lax monoidal functor</strong>, not a monad.</p>]]></content><author><name></name></author><category term="Math" /><category term="category theory" /><category term="math" /><summary type="html"><![CDATA[Introduction]]></summary></entry></feed>

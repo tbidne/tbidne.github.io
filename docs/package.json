@@ -1,0 +1,35 @@
+{
+  "name": "tbidne-jekyll",
+  "version": "0.0.1",
+  "description": "A Jekyll website",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tbidne/tbidne.github.io.git"
+  },
+  "author": "Thomas Bidne",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tbidne/tbidne.github.io/issues"
+  },
+  "homepage": "https://github.com/tbidne/tbidne.github.io/",
+  "scripts": {
+    "prebuild": "npx rimraf assets/js/dist",
+    "build": "NODE_ENV=production npx rollup -c --bundleConfigAsCjs",
+    "prewatch": "npx rimraf assets/js/dist",
+    "watch": "npx rollup -c --bundleConfigAsCjs -w"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/preset-env": "^7.25.3",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-terser": "^0.4.4",
+    "prettier": "^3.3.3",
+    "rimraf": "^6.0.1",
+    "rollup": "^4.20.0",
+    "rollup-plugin-license": "^3.5.2",
+    "stylelint": "^16.8.1",
+    "stylelint-config-standard": "^36.0.1",
+    "stylelint-config-standard-scss": "^13.1.0"
+  }
+}
