@@ -4,7 +4,7 @@ check=0
 while [ $# -gt 0 ]; do
   case "$1" in
     "-h" | "--help")
-      echo -e "fmt.sh: Runs formatter.\n"
+      echo -e "serve.sh: Serves website.\n"
       echo "Usage: fmt.sh [-c|--check]"
       echo "              [-h|--help]"
       exit 0
