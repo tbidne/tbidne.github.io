@@ -242,7 +242,7 @@ div {
   }
 }
 
-@media all and (max-width: 576px) {
+@media all and (width <= 576px) {
   .post-content {
     > div[class^='language-'] {
       @include ml-mr(-1.25rem);

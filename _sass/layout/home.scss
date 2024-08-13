@@ -177,7 +177,7 @@
 }
 
 /* Hide SideBar and TOC */
-@media all and (max-width: 830px) {
+@media all and (width <= 830px) {
   .post-preview {
     margin-left: -0.5rem;
     margin-right: -0.5rem;
@@ -195,7 +195,7 @@
 }
 
 /* Sidebar is visible */
-@media all and (min-width: 831px) {
+@media all and (width >= 831px) {
   #post-list {
     margin-top: 3rem;
 
@@ -241,7 +241,7 @@
 }
 
 /* Panel hidden */
-@media all and (max-width: 1200px) {
+@media all and (width <= 1200px) {
   #post-list {
     padding-right: 0;
   }
