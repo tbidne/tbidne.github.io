@@ -50,6 +50,7 @@ See my [Professional Experience](#professional_experience) for more details.
 ### 2023 - Present: Independent Contractor
 
 - Improved outstanding issues in poorly understood Haskell voice analytics software:
+  - Added LLM integration with OpenAI, for running natural language queries on audio transcripts.
   - Added documentation, extensive test suites, and Github CI/CD.
   - Refactored code to remove difficult dependencies.
   - Designed, implemented, and demo-ed new features.
