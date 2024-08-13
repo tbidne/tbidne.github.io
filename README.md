@@ -57,9 +57,19 @@ Developer tools/scripts can be found in the [tools](/tools) directory.
 
 ## Updating dependencies
 
-Updating nix inputs is straightforward (`nix flake update`), but how do we upgrade ruby dependencies? The `bundle outdated` command can help, though we are handicapped to a degree. We want to keep `jekyll` and its transitive dependencies synced with github-pages, so at least those should match here: https://rubygems.org/gems/github-pages.
+### Nix
+
+In general, `nix flake update`. Though periodically check to see if we should update `nodejs`, `ruby`, or `jekyll`.
+
+### Ruby
+
+The `bundle outdated` command can help, though we are handicapped to a degree. We want to keep `jekyll` and its transitive dependencies synced with github-pages, so at least those should match here: https://rubygems.org/gems/github-pages.
 
 For other dependencies, upgrade the versions in `Gemfile` per `bundle outdated`, verifying that `./tools/build.sh --clean && ./tools/serve.sh` works. Regenerate the lock file by deleting it and running `bundle lock`.
+
+### Node
+
+Run `npm audit fix` and `npm outdated`.
 
 # Release
 

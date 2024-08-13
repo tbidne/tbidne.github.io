@@ -15,7 +15,7 @@
         { pkgs, ... }:
         let
           buildTools = [
-            pkgs.nodejs
+            pkgs.nodejs_22
             pkgs.rubyPackages_3_1.jekyll
             pkgs.ruby_3_1
           ];
